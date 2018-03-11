@@ -33,6 +33,12 @@ class Jupyter(object):
     def __init__(self):
         self.kernels = {}
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+
     def close(self):
         for kernel_id, kernel in self.kernels.items():
             kernel.close()
