@@ -1,0 +1,13 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+
+\begin{document}
+Wibble <|[kernel=maxima]2^^3;|> gronk
+
+<|[kernel=maxima]
+plot2d([sin, cos, tan], [x, -10, 10], [y, -10, 10], [pdf_file,"maxplot.pdf"]);
+|>
+
+More quux! <|[kernel=python]2**3|> but not foo <|[kernel=maxima]x;|>
+\end{document}
