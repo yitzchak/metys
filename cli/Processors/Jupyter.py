@@ -26,7 +26,7 @@ class Kernel(object):
     def execute_chunk(self, chunk):
         chunk['messages'] = []
         self.client.execute_interactive(chunk['content'], store_history=False,
-            allow_stdin=False, output_hook=lambda msg: chunk['messages'].append(msg))
+            allow_stdin=False, output_hook=lambda msg: chunk['messages'].append(msg) if msg['msg_type'] in ('display_data', 'execute_result', 'stream') else None)
 
 
 class Jupyter(object):
