@@ -1,14 +1,17 @@
 class NameChunks:
 
+    def __init__(self, doc):
+        self.doc = doc
+
     def __enter__(self):
         return self
 
     def __exit__(self, type, value, traceback):
         pass
 
-    def apply(self, chunks):
+    def apply(self):
         counts = {}
-        for chunk in chunks:
+        for chunk in self.doc.chunks:
             if chunk['type'] in counts:
                 counts[chunk['type']] += 1
             else:

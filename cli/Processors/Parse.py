@@ -5,14 +5,13 @@ import urllib
 
 class Parse(object):
 
-    def __init__(self, source, parser=None):
-        self.source = source
-        self.chunks = []
+    def __init__(self, doc, parser=None):
+        self.doc = doc
         if parser:
             self.parser = parser
-        elif re.search(r'(?i)\..?nw$', self.source):
+        elif re.search(r'(?i)\..?nw$', self.doc.source):
             self.parser = 'noweb'
-        elif re.search(r'(?i)\..?md$', self.source):
+        elif re.search(r'(?i)\..?md$', self.doc.source):
             self.parser = 'markdown'
         else:
             self.parser = 'metys'
@@ -27,11 +26,11 @@ class Parse(object):
 
     def read(self):
         try:
-            sourcefile = io.open(self.source, 'r', encoding='utf-8')
+            sourcefile = io.open(self.doc.source, 'r', encoding='utf-8')
             self.contents = sourcefile.read()
             sourcefile.close()
         except IOError:
-            sourcefile = urllib.request.urlopen(self.source)
+            sourcefile = urllib.request.urlopen(self.doc.source)
             self.contents = sourcefile.read().decode('utf-8')
             sourcefile.close()
 
@@ -43,11 +42,11 @@ class Parse(object):
         if 'options' not in chunk:
             chunk['options'] = {}
 
-        self.chunks.append(chunk)
+        self.doc.chunks.append(chunk)
         return chunk
 
     def add_input(self, input):
-        self.chunks[-1]['input'] += input
+        self.doc.chunks[-1]['input'] += input
 
     def parse_options(self, value):
         options = {}
@@ -100,7 +99,7 @@ class Parse(object):
                 if parts[i] == '`':
                     chunk['options']['inline'] = True
 
-    def apply(self, chunks):
+    def apply(self):
         self.read()
 
         if self.parser == 'noweb':
@@ -109,5 +108,3 @@ class Parse(object):
             self.parse_markdown()
         else:
             self.parse_metys()
-
-        chunks.extend(self.chunks)

@@ -4,8 +4,8 @@ import mimetypes
 
 class GetResults(object):
 
-    def __init__(self, types):
-        self.types = types
+    def __init__(self, doc):
+        self.doc = doc
 
     def __enter__(self):
         return self
@@ -13,8 +13,8 @@ class GetResults(object):
     def __exit__(self, type, value, traceback):
         pass
 
-    def apply(self, chunks):
-        for chunk in chunks:
+    def apply(self):
+        for chunk in self.doc.chunks:
             if chunk['type'] == 'code':
                 chunk['results'] = []
                 for msg in chunk['messages']:
@@ -24,7 +24,7 @@ class GetResults(object):
 
     def get_result(self, chunk, msg):
         if 'content' in msg and 'data' in msg['content']:
-            for type in self.types:
+            for type in self.doc.types:
                 if type['mime'] in msg['content']['data']:
                     data = msg['content']['data'][type['mime']]
                     result = {}

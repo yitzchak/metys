@@ -30,8 +30,9 @@ class Kernel(object):
 
 
 class Jupyter(object):
-    def __init__(self):
+    def __init__(self, doc):
         self.kernels = {}
+        self.doc = doc
 
     def __enter__(self):
         return self
@@ -43,8 +44,8 @@ class Jupyter(object):
         for kernel_id, kernel in self.kernels.items():
             kernel.close()
 
-    def apply(self, chunks):
-        for chunk in chunks:
+    def apply(self):
+        for chunk in self.doc.chunks:
             if (chunk['type'] == 'code'):
                 self.execute_chunk(chunk)
 

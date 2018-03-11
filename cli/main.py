@@ -1,5 +1,6 @@
 import Processors
 import argparse
+from Document import Document
 
 
 ap = argparse.ArgumentParser()
@@ -10,34 +11,27 @@ ap.add_argument('--kernel')
 ap.add_argument('--parser')
 args = ap.parse_args()
 
-defaultOptions = {'kernel': 'python' if args.kernel == None else args.kernel}
-types = [
-    {'mime': 'application/pdf', 'external': True},
-    {'mime': 'image/png', 'external': True},
-    {'mime': 'image/jpeg', 'external': True},
-    {'mime': 'text/latex', 'external': False},
-    {'mime': 'text/plain', 'external': False}
-]
+doc = Document(args.source)
 
-chunks = []
+doc.options['kernel'] =  'python' if args.kernel == None else args.kernel
 
-with Processors.Parse(args.source) as p:
-    p.apply(chunks)
+with Processors.Parse(doc) as p:
+    p.apply()
 
-with Processors.NameChunks() as p:
-    p.apply(chunks)
+with Processors.NameChunks(doc) as p:
+    p.apply()
 
-with Processors.ApplyDefaultOptions(defaultOptions) as p:
-    p.apply(chunks)
+with Processors.ApplyDefaultOptions(doc) as p:
+    p.apply()
 
-with Processors.Jupyter() as p:
-    p.apply(chunks)
+with Processors.Jupyter(doc) as p:
+    p.apply()
 
-with Processors.GetResults(types) as p:
-    p.apply(chunks)
+with Processors.GetResults(doc) as p:
+    p.apply()
 
-with Processors.LaTeX() as p:
-    p.apply(chunks)
+with Processors.LaTeX(doc) as p:
+    p.apply()
 
-with Processors.WriteOutput() as p:
-    p.apply(chunks)
+with Processors.WriteOutput(doc) as p:
+    p.apply()
