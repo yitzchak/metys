@@ -66,7 +66,7 @@ class Parser(object):
         return shlex.split(value)[0]
 
     def parse_metys(self):
-        parts = re.split(r'(?s)<\|(\[.*?\])?(.*?)\|>', self.content)
+        parts = re.split(r'(?s)<\|(?:\[(.*?)\])?(.*?)\|>', self.content)
         for i in range(len(parts)):
             sub = i % 3
             if sub == 0:
