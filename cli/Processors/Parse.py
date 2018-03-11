@@ -1,10 +1,9 @@
-import copy
 import io
 import re
 import shlex
 import urllib
 
-class Parser(object):
+class Parse(object):
 
     def __init__(self, source, parser=None):
         self.source = source
@@ -20,32 +19,35 @@ class Parser(object):
 
         self.default_key = 'name' if self.parser == 'noweb' else 'kernel'
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        pass
+
     def read(self):
         try:
             sourcefile = io.open(self.source, 'r', encoding='utf-8')
-            self.content = sourcefile.read()
+            self.contents = sourcefile.read()
             sourcefile.close()
         except IOError:
             sourcefile = urllib.request.urlopen(self.source)
-            self.content = sourcefile.read().decode('utf-8')
+            self.contents = sourcefile.read().decode('utf-8')
             sourcefile.close()
-
-    def get_chunks(self):
-        return copy.deepcopy(self.chunks)
 
     def add_chunk(self, **chunk):
         if 'options' in chunk and isinstance(chunk['options'], str):
             chunk['options'] = self.parse_options(chunk['options'])
-        if 'content' not in chunk:
-            chunk['content'] = ''
+        if 'input' not in chunk:
+            chunk['input'] = ''
         if 'options' not in chunk:
             chunk['options'] = {}
 
         self.chunks.append(chunk)
         return chunk
 
-    def add_content(self, content):
-        self.chunks[-1]['content'] += content
+    def add_input(self, input):
+        self.chunks[-1]['input'] += input
 
     def parse_options(self, value):
         options = {}
@@ -66,39 +68,39 @@ class Parser(object):
         return shlex.split(value)[0]
 
     def parse_metys(self):
-        parts = re.split(r'(?s)<\|(?:\[(.*?)\])?(.*?)\|>', self.content)
+        parts = re.split(r'(?s)<\|(?:\[(.*?)\])?(.*?)\|>', self.contents)
         for i in range(len(parts)):
             sub = i % 3
             if sub == 0:
-                self.add_chunk(type='text', content=parts[i])
+                self.add_chunk(type='text', input=parts[i])
             elif sub == 1:
-                self.add_chunk(type='code', content=parts[i+1], options=parts[i])
+                self.add_chunk(type='code', input=parts[i+1], options=parts[i])
 
     def parse_noweb(self):
         self.add_chunk(type='text')
-        parts = re.split(r'(?m)^(?:<<(.*?)>>=|@)\s*$', self.content)
+        parts = re.split(r'(?m)^(?:<<(.*?)>>=|@)\s*$', self.contents)
         for i in range(len(parts)):
             sub = i % 2
             if sub == 0:
-                self.add_content(parts[i])
+                self.add_input(parts[i])
             elif parts[i]:
                 self.add_chunk(type='code', options=parts[i])
             else:
                 self.add_chunk(type='text')
 
     def parse_markdown(self):
-        parts = re.split(r'(?ms)(?P<fence>^```|(?<!`)`)\{([^}]+)\}(.*?)(?P=fence)', self.content)
+        parts = re.split(r'(?ms)(?P<fence>^```|(?<!`)`)\{([^}]+)\}(.*?)(?P=fence)', self.contents)
         print(parts)
         for i in range(len(parts)):
             sub = i % 4
             if sub == 0:
-                self.add_chunk(type='text', content=parts[i])
+                self.add_chunk(type='text', input=parts[i])
             elif sub == 1:
-                chunk = self.add_chunk(type='code', content=parts[i+2], options=parts[i+1])
+                chunk = self.add_chunk(type='code', input=parts[i+2], options=parts[i+1])
                 if parts[i] == '`':
                     chunk['options']['inline'] = True
 
-    def parse(self):
+    def apply(self, chunks):
         self.read()
 
         if self.parser == 'noweb':
@@ -107,3 +109,5 @@ class Parser(object):
             self.parse_markdown()
         else:
             self.parse_metys()
+
+        chunks.extend(self.chunks)
