@@ -19,7 +19,7 @@ class Kernel(object):
             this.close()
             raise
 
-    def close(self):
+    def shutdown(self):
         self.client.stop_channels()
         self.kernel.shutdown_kernel()
 
@@ -38,11 +38,8 @@ class EvaluateJupyterCode(object):
         return self
 
     def __exit__(self, type, value, traceback):
-        self.close()
-
-    def close(self):
         for kernel_id, kernel in self.kernels.items():
-            kernel.close()
+            kernel.shutdown()
 
     def apply(self):
         for chunk in self.doc.chunks:
