@@ -3,11 +3,11 @@
 \usepackage{graphicx,minted}
 
 \begin{document}
-Wibble <|[kernel=maxima,inline=True]2^^3;|> gronk
+Wibble <|[kernel=maxima]2^^3;|> gronk
 
-<|[kernel=maxima]
+<||[kernel=maxima]
 plot2d([sin, cos, tan], [x, -10, 10], [y, -10, 10], [pdf_file,"maxplot.pdf"]);
-|>
+||>
 
-More quux! <|[kernel=python,inline=True]2**3|> but not foo <|[kernel=maxima,inline=True]x;|>
+More quux! <|[kernel=python]2**3|> but not foo <|[kernel=maxima]x;|>
 \end{document}
