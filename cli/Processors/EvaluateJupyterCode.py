@@ -29,7 +29,7 @@ class Kernel(object):
             allow_stdin=False, output_hook=lambda msg: chunk['messages'].append(msg) if msg['msg_type'] in ('display_data', 'execute_result', 'stream') else None)
 
 
-class Jupyter(object):
+class EvaluateJupyterCode(object):
     def __init__(self, doc):
         self.kernels = {}
         self.doc = doc

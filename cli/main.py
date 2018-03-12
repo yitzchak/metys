@@ -24,7 +24,7 @@ with Processors.NameChunks(doc) as p:
 with Processors.ApplyDefaultOptions(doc) as p:
     p.apply()
 
-with Processors.Jupyter(doc) as p:
+with Processors.EvaluateJupyterCode(doc) as p:
     p.apply()
 
 with Processors.GetResults(doc) as p:
