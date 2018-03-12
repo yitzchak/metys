@@ -9,6 +9,7 @@ class Document(object):
         self.options = {
             'echo': True,
             'evaluate': True,
+            'inline': False,
             'results': True
         }
         self.types = [

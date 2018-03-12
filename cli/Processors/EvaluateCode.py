@@ -18,6 +18,9 @@ class Kernel(object):
             print("Unable to start kernel.")
             this.close()
             raise
+        info = self.client.kernel_info(reply=True)
+        if info and 'content' in info and 'language_info' in info['content']:
+            self.language_info = info['content']['language_info']
 
     def shutdown(self):
         self.client.stop_channels()
@@ -25,6 +28,8 @@ class Kernel(object):
 
     def execute_chunk(self, chunk):
         chunk['messages'] = []
+        if hasattr(self, 'language_info'):
+            chunk['language_info'] = self.language_info
         self.client.execute_interactive(chunk['input'], store_history=False,
             allow_stdin=False, output_hook=lambda msg: chunk['messages'].append(msg) if msg['msg_type'] in ('display_data', 'execute_result', 'stream') else None)
 
