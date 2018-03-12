@@ -1,5 +1,6 @@
 import base64
 import mimetypes
+import os
 
 
 class GetResults(object):
@@ -41,6 +42,6 @@ class GetResults(object):
         ext = mimetypes.guess_extension(mime)
         if ext:
             name += ext
-        with open(name, mode) as f:
+        with open(os.path.join(self.doc.root, name), mode) as f:
             f.write(data)
         return name

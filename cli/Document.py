@@ -1,6 +1,10 @@
+import os
+
+
 class Document(object):
     def __init__(self, source):
         self.source = source
+        self.root = os.path.dirname(source)
         self.chunks = []
         self.options = {
             'kernel': 'python',

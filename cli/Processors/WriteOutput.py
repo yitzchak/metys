@@ -1,3 +1,6 @@
+import os
+
+
 class WriteOutput:
 
     def __init__(self, doc):
@@ -10,6 +13,7 @@ class WriteOutput:
         pass
 
     def apply(self):
-        with open('test.tex', 'w+') as f:
+        name, _ = os.path.splitext(self.doc.source)
+        with open(name + '.tex', 'w+') as f:
             for chunk in self.doc.chunks:
                 f.write(chunk['output'])
