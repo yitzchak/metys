@@ -11,7 +11,7 @@ class FormatOutput:
         },
         'minted': {
             'code': '\\begin{{minted}}{{{pygments_lexer}}}\n{content}\n\\end{{minted}}\n',
-            'inline_code': '\\mintinline{{{lexer}}}{{{content}}}',
+            'inline_code': '\\mintinline{{{pygments_lexer}}}{{{content}}}',
             'external': '\\includegraphics{{{content}}}'
         },
     }
