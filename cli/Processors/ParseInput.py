@@ -3,7 +3,7 @@ import re
 import shlex
 import urllib
 
-class Parse(object):
+class ParseInput(object):
 
     def __init__(self, doc, parser=None):
         self.doc = doc

@@ -15,7 +15,7 @@ doc = Document(args.source)
 
 doc.options['kernel'] =  'python' if args.kernel == None else args.kernel
 
-with Processors.Parse(doc) as p:
+with Processors.ParseInput(doc) as p:
     p.apply()
 
 with Processors.NameChunks(doc) as p:
