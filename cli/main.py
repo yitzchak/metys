@@ -30,7 +30,7 @@ with Processors.EvaluateJupyterCode(doc) as p:
 with Processors.GetResults(doc) as p:
     p.apply()
 
-with Processors.LaTeX(doc) as p:
+with Processors.FormatOutput(doc) as p:
     p.apply()
 
 with Processors.WriteOutput(doc) as p:

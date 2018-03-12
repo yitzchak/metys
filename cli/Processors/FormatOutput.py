@@ -1,4 +1,4 @@
-class LaTeX:
+class FormatOutput:
 
     def __init__(self, doc):
         self.doc = doc
