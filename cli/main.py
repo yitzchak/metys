@@ -13,7 +13,15 @@ args = ap.parse_args()
 
 doc = Document(args.source)
 
-doc.options['kernel'] =  'python' if args.kernel == None else args.kernel
+if args.kernel != None:
+    doc.options['kernel'] = args.kernel
+if args.parser != None:
+    doc.options['parser'] = args.parser
+if args.format != None:
+    doc.options['format'] = args.format
+
+with Processors.DeduceOptions(doc) as p:
+    p.apply()
 
 with Processors.ParseInput(doc) as p:
     p.apply()
@@ -24,7 +32,7 @@ with Processors.NameChunks(doc) as p:
 with Processors.ApplyDefaultOptions(doc) as p:
     p.apply()
 
-with Processors.EvaluateJupyterCode(doc) as p:
+with Processors.EvaluateCode(doc) as p:
     p.apply()
 
 with Processors.GetResults(doc) as p:

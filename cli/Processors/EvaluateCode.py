@@ -29,7 +29,7 @@ class Kernel(object):
             allow_stdin=False, output_hook=lambda msg: chunk['messages'].append(msg) if msg['msg_type'] in ('display_data', 'execute_result', 'stream') else None)
 
 
-class EvaluateJupyterCode(object):
+class EvaluateCode(object):
     def __init__(self, doc):
         self.kernels = {}
         self.doc = doc
@@ -43,7 +43,7 @@ class EvaluateJupyterCode(object):
 
     def apply(self):
         for chunk in self.doc.chunks:
-            if (chunk['type'] == 'code'):
+            if chunk['type'] == 'code' and chunk['options']['evaluate']:
                 self.execute_chunk(chunk)
 
     def execute_chunk(self, chunk):

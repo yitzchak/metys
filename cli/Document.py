@@ -7,9 +7,9 @@ class Document(object):
         self.root = os.path.dirname(source)
         self.chunks = []
         self.options = {
-            'kernel': 'python',
             'echo': True,
-            'hidden': False
+            'evaluate': True,
+            'results': True
         }
         self.types = [
             {'mime': 'application/pdf', 'external': True},

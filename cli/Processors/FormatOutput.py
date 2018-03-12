@@ -11,7 +11,17 @@ class FormatOutput:
 
     def apply(self):
         for chunk in self.doc.chunks:
-            if 'results' in chunk:
-                chunk['output'] = '\n'.join(map(lambda result: ('\\includegraphics{' + result['data'] + '}') if result['external'] else result['data'], chunk['results']))
+            if chunk['type'] == 'code':
+                chunk['output'] = ''
+                self.output_code(chunk)
+                self.output_results(chunk)
             else:
                 chunk['output'] = chunk['input']
+
+    def output_code(self, chunk):
+        if chunk['options']['echo']:
+            chunk['output'] += '\\begin{verbatim}\n' + chunk['input'] + '\n\\end{verbatim}\n'
+
+    def output_results(self, chunk):
+        if chunk['options']['results']:
+                chunk['output'] += '\n'.join(map(lambda result: ('\\includegraphics{' + result['data'] + '}') if result['external'] else result['data'], chunk['results']))

@@ -5,20 +5,12 @@ import urllib
 
 class ParseInput(object):
 
-    def __init__(self, doc, parser=None):
+    def __init__(self, doc):
         self.doc = doc
-        if parser:
-            self.parser = parser
-        elif re.search(r'(?i)\..?nw$', self.doc.source):
-            self.parser = 'noweb'
-        elif re.search(r'(?i)\..?md$', self.doc.source):
-            self.parser = 'markdown'
-        else:
-            self.parser = 'metys'
-
-        self.default_key = 'name' if self.parser == 'noweb' else 'kernel'
 
     def __enter__(self):
+        self.default_key = 'name' if self.doc.options['parser'] == 'noweb' else 'kernel'
+        self.read()
         return self
 
     def __exit__(self, type, value, traceback):
@@ -100,11 +92,9 @@ class ParseInput(object):
                     chunk['options']['inline'] = True
 
     def apply(self):
-        self.read()
-
-        if self.parser == 'noweb':
+        if self.doc.options['parser'] == 'noweb':
             self.parse_noweb()
-        elif self.parser == 'markdown':
+        elif self.doc.options['parser'] == 'markdown':
             self.parse_markdown()
         else:
             self.parse_metys()

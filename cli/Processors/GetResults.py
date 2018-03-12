@@ -16,7 +16,7 @@ class GetResults(object):
 
     def apply(self):
         for chunk in self.doc.chunks:
-            if chunk['type'] == 'code':
+            if chunk['type'] == 'code' and chunk['options']['results']:
                 chunk['results'] = []
                 for msg in chunk['messages']:
                     result = self.get_result(chunk, msg)
