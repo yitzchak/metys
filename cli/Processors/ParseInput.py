@@ -59,14 +59,14 @@ class ParseInput(object):
         return shlex.split(value)[0]
 
     def parse_metys(self):
-        parts = re.split(r'(?s)<(?P<delim>\|{1,2})(?:\[(.*?)\])?(.*?)(?P=delim)>', self.contents)
+        parts = re.split(r'(?s)<\|(.*?)(:{2,3})(.*?)\|>', self.contents)
         for i in range(len(parts)):
             sub = i % 4
             if sub == 0:
                 self.add_chunk(type='text', input=parts[i])
             elif sub == 1:
-                self.add_chunk(type='code', input=parts[i+2], options=parts[i+1])
-                if parts[i] == '|':
+                self.add_chunk(type='code', input=parts[i+2], options=parts[i])
+                if parts[i+1] == '::':
                     self.doc.chunks[-1]['options']['inline'] = True
 
     def parse_noweb(self):
