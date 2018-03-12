@@ -1,6 +1,6 @@
 \documentclass{article}
 
-\usepackage{graphicx}
+\usepackage{graphicx,minted}
 
 \begin{document}
 Wibble <|[kernel=maxima,inline=True]2^^3;|> gronk
