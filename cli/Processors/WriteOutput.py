@@ -16,4 +16,8 @@ class WriteOutput:
         name, _ = os.path.splitext(self.doc.source)
         with open(name + '.tex', 'w+') as f:
             for chunk in self.doc.chunks:
-                f.write(chunk['output'])
+                if 'output' in chunk['options']:
+                    with open(chunk['options']['output'], 'w+') as g:
+                        g.write(chunk['output'])
+                else:
+                    f.write(chunk['output'])
