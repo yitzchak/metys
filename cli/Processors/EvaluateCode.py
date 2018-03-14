@@ -27,11 +27,11 @@ class Kernel(object):
         self.kernel.shutdown_kernel()
 
     def execute_chunk(self, chunk):
-        chunk['messages'] = []
+        chunk.messages = []
         if hasattr(self, 'language_info'):
-            chunk['language_info'] = self.language_info
-        self.client.execute_interactive(chunk['input'], store_history=False,
-            allow_stdin=False, output_hook=lambda msg: chunk['messages'].append(msg) if msg['msg_type'] in ('display_data', 'execute_result', 'stream') else None)
+            chunk.language_info = self.language_info
+        self.client.execute_interactive(chunk.input, store_history=False,
+            allow_stdin=False, output_hook=lambda msg: chunk.messages.append(msg) if msg['msg_type'] in ('display_data', 'execute_result', 'stream') else None)
 
 
 class EvaluateCode(object):
@@ -48,7 +48,7 @@ class EvaluateCode(object):
 
     def apply(self):
         for chunk in self.doc.chunks:
-            if chunk['type'] == 'code' and chunk['options']['evaluate']:
+            if chunk.type == 'code' and chunk.options['evaluate']:
                 self.execute_chunk(chunk)
 
     def execute_chunk(self, chunk):
@@ -56,8 +56,8 @@ class EvaluateCode(object):
         kernel.execute_chunk(chunk)
 
     def get_kernel(self, chunk):
-        kernel_name = chunk['options']['kernel']
-        kernel_id = (kernel_name + '|' + chunk['options']['session']) if 'session' in chunk['options'] else kernel_name
+        kernel_name = chunk.options['kernel']
+        kernel_id = (kernel_name + '|' + chunk.options['session']) if 'session' in chunk.options else kernel_name
         if kernel_id in self.kernels:
             return self.kernels[kernel_id]
 

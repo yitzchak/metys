@@ -29,8 +29,8 @@ with Processors.ParseInput(doc) as p:
 with Processors.NameChunks(doc) as p:
     p.apply()
 
-with Processors.ApplyDefaultOptions(doc) as p:
-    p.apply()
+# with Processors.ApplyDefaultOptions(doc) as p:
+#     p.apply()
 
 with Processors.EvaluateCode(doc) as p:
     p.apply()

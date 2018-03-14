@@ -27,27 +27,27 @@ class FormatOutput:
 
     def apply(self):
         for chunk in self.doc.chunks:
-            if chunk['type'] == 'code':
-                chunk['output'] = ''
+            if chunk.type == 'code':
+                chunk.output = ''
                 self.output_code(chunk)
                 self.output_results(chunk)
             else:
-                chunk['output'] = self.format(chunk, 'text', content=chunk['input'])
+                chunk.output = self.format(chunk, 'text', content=chunk.input)
 
     def format(self, chunk, type, **kwargs):
-        kwargs.update(chunk['options'])
-        f = self.formats[chunk['options']['format']]
-        if chunk['options']['inline']:
+        kwargs.update(chunk.options)
+        f = self.formats[chunk.options['format']]
+        if chunk.options['inline']:
             key = 'inline_' + type
             if key in f:
                 return f[key].format(**kwargs)
         return f[type].format(**kwargs) if type in f else kwargs['content']
 
     def output_code(self, chunk):
-        if chunk['options']['echo']:
-            pygments_lexer = chunk['language_info']['pygments_lexer'] if 'language_info' in chunk and 'pygments_lexer' in chunk['language_info'] else chunk['kernel']
-            chunk['output'] += self.format(chunk, 'code', pygments_lexer=pygments_lexer, content=chunk['input'].strip('\n'))
+        if chunk.options['echo']:
+            pygments_lexer = chunk.language_info['pygments_lexer'] if hasattr(chunk, 'language_info') and 'pygments_lexer' in chunk.language_info else chunk.kernel
+            chunk.output += self.format(chunk, 'code', pygments_lexer=pygments_lexer, content=chunk.input.strip('\n'))
 
     def output_results(self, chunk):
-        if chunk['options']['results'] and 'results' in chunk:
-            chunk['output'] += '\n'.join(map(lambda result: self.format(chunk, 'external' if result['external'] else 'text', content=result['data']), chunk['results']))
+        if chunk.options['results'] and hasattr(chunk, 'results'):
+            chunk.output += '\n'.join(map(lambda result: self.format(chunk, 'external' if result['external'] else 'text', content=result['data']), chunk.results))

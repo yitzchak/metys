@@ -12,9 +12,9 @@ class NameChunks:
     def apply(self):
         counts = {}
         for chunk in self.doc.chunks:
-            if chunk['type'] in counts:
-                counts[chunk['type']] += 1
+            if chunk.type in counts:
+                counts[chunk.type] += 1
             else:
-                counts[chunk['type']] = 1
-            if 'name' not in chunk['options']:
-                chunk['options']['name'] = chunk['type'] + str(counts[chunk['type']])
+                counts[chunk.type] = 1
+            if 'name' not in chunk.options:
+                chunk.options['name'] = chunk.type + str(counts[chunk.type])

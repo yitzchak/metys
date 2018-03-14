@@ -13,5 +13,5 @@ class ApplyDefaultOptions:
         for chunk in self.doc.chunks:
             options = {}
             options.update(self.doc.options)
-            options.update(chunk['options'])
-            chunk['options'] = options
+            options.update(chunk.options)
+            chunk.options = options
