@@ -7,7 +7,7 @@ class WriteOutput:
         self.root = root
         if 'output' not in self.root.options:
             name, _ = os.path.splitext(self.root.options['input'])
-            root.options['output'] = name + '.tex'
+            root.options['output'] = name + ('.md' if self.root.options['format'] == 'markdown' else '.tex')
 
     def __enter__(self):
         self.file = open(self.root.options['output'], 'w+')

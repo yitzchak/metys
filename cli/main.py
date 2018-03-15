@@ -34,10 +34,10 @@ if args.parser != None:
 if args.format != None:
     doc.options['format'] = args.format
 
-with Processors.DeduceOptions(doc) as p:
+with Processors.ParseInput(doc) as p:
     p.apply()
 
-with Processors.ParseInput(doc) as p:
+with Processors.DeduceOptions(doc) as p:
     p.apply()
 
 with Processors.NameChunks(doc) as p:
