@@ -6,7 +6,7 @@ class WriteOutput:
     def __init__(self, root):
         self.root = root
         if 'output' not in self.root.options:
-            name, _ = os.path.splitext(self.root.options['source'])
+            name, _ = os.path.splitext(self.root.options['input'])
             root.options['output'] = name + '.tex'
 
     def __enter__(self):

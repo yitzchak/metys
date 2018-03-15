@@ -13,25 +13,25 @@ class DeduceOptions:
         pass
 
     def apply(self):
-        source = self.root.options['source']
+        input = self.root.options['input']
         # if 'parser' not in self.root.options:
-        #     if re.search(r'(?i)\..*nw$', source):
+        #     if re.search(r'(?i)\..*nw$', input):
         #         self.root.options['parser'] = 'noweb'
-        #     elif re.search(r'(?i)\..*md$', source):
+        #     elif re.search(r'(?i)\..*md$', input):
         #         self.root.options['parser'] = 'markdown'
         #     else:
         #         self.root.options['parser'] = 'metys'
 
         if 'format' not in self.root.options:
-            if re.search(r'(?i)\..*md$', source):
+            if re.search(r'(?i)\..*md$', input):
                 self.root.options['format'] = 'markdown'
             else:
                 self.root.options['format'] = 'latex'
 
         if 'kernel' not in self.root.options:
-            if re.search(r'(?i)\.R(nw|md|mt)$', source):
+            if re.search(r'(?i)\.R(nw|md|mt)$', input):
                 self.root.options['kernel'] = 'R'
-            if re.search(r'(?i)\.P(nw|md|mt)$', source):
+            if re.search(r'(?i)\.P(nw|md|mt)$', input):
                 self.root.options['kernel'] = 'python'
             else:
                 self.root.options['kernel'] = 'python'

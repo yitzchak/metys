@@ -5,7 +5,7 @@ from Chunk import Chunk
 
 ap = argparse.ArgumentParser()
 
-ap.add_argument('source')
+ap.add_argument('input')
 ap.add_argument('--format')
 ap.add_argument('--kernel')
 ap.add_argument('--parser')
@@ -16,7 +16,7 @@ doc = Chunk(type='group', options={
     'evaluate': True,
     'inline': False,
     'results': True,
-    'source': args.source,
+    'input': args.input,
     'name': 'doc',
     'types': [
         {'mime': 'application/pdf', 'external': True},

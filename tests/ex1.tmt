@@ -9,6 +9,6 @@ Wibble <|kernel=maxima|2^^3;|> gronk
 plot2d([sin, cos, tan], [x, -10, 10], [y, -10, 10], [pdf_file,"maxplot.pdf"]);
 |>
 
-<|source=sub.tmt@|>
+<|input=sub.tmt@|>
 
 \end{document}

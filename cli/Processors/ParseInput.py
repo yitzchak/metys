@@ -19,13 +19,13 @@ class ParseInput(object):
 
     def read(self):
         try:
-            sourcefile = io.open(self.root.options['source'], 'r', encoding='utf-8')
-            self.root.input = sourcefile.read()
-            sourcefile.close()
+            inputfile = io.open(self.root.options['input'], 'r', encoding='utf-8')
+            self.root.input = inputfile.read()
+            inputfile.close()
         except IOError:
-            sourcefile = urllib.request.urlopen(self.root.options['source'])
-            self.root.input = sourcefile.read().decode('utf-8')
-            sourcefile.close()
+            inputfile = urllib.request.urlopen(self.root.options['input'])
+            self.root.input = inputfile.read().decode('utf-8')
+            inputfile.close()
 
     def add_chunk(self, type=None, input=None, options=None):
         opts = {}
@@ -38,7 +38,7 @@ class ParseInput(object):
         chunk = Chunk(type, input, opts)
         self.stack[-1].chunks.append(chunk)
 
-        if 'source' in opts:
+        if 'input' in opts:
             with ParseInput(chunk) as p:
                 p.apply()
         return chunk
@@ -116,12 +116,12 @@ class ParseInput(object):
                     chunk.options['inline'] = True
 
     def apply(self):
-        print('Parsing ' + self.root.options['source'])
+        print('Parsing ' + self.root.options['input'])
 
         if 'parser' not in self.root.options:
-            if re.search(r'(?i)\..*nw$', self.root.options['source']):
+            if re.search(r'(?i)\..*nw$', self.root.options['input']):
                 self.root.options['parser'] = 'noweb'
-            elif re.search(r'(?i)\..*md$', self.root.options['source']):
+            elif re.search(r'(?i)\..*md$', self.root.options['input']):
                 self.root.options['parser'] = 'markdown'
             else:
                 self.root.options['parser'] = 'metys'
