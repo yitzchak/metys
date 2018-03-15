@@ -1,18 +1,27 @@
+import re
+
+
 class FormatOutput:
 
     formats = {
         'latex': {
             'code': '\\begin{{verbatim}}\n{content}\n\\end{{verbatim}}\n',
-            'external': '\\includegraphics{{{content}}}'
+            'external': '\\includegraphics{{{content}}}',
+            'math': '\\begin{{equation}}\n{content}\\label{{eq:{name}}}\n\\end{{equation}}\n',
+            'inline_math': '${content}$'
         },
         'markdown': {
             'code': '```{kernel}\n{content}\n```\n',
-            'inline_code': '`{content}`'
+            'inline_code': '`{content}`',
+            'math': '$$\n{content}\n$$\n',
+            'inline_math': '${content}$'
         },
         'minted': {
             'code': '\\begin{{minted}}{{{pygments_lexer}}}\n{content}\n\\end{{minted}}\n',
             'inline_code': '\\mintinline{{{pygments_lexer}}}{{{content}}}',
-            'external': '\\includegraphics{{{content}}}'
+            'external': '\\includegraphics{{{content}}}',
+            'math': '\\begin{{equation}}\n{content}\n\\end{{equation}}\n',
+            'inline_math': '${content}$'
         },
     }
 
@@ -34,6 +43,7 @@ class FormatOutput:
                 chunk.output = ''
                 self.output_code(chunk)
                 self.output_results(chunk)
+                chunk.output = chunk.output.strip('\n')
             else:
                 chunk.output = self.format(chunk, 'text', content=chunk.input)
 
@@ -53,4 +63,14 @@ class FormatOutput:
 
     def output_results(self, chunk):
         if chunk.options['results'] and hasattr(chunk, 'results'):
-            chunk.output += '\n'.join(map(lambda result: self.format(chunk, 'external' if result['external'] else 'text', content=result['data']), chunk.results))
+            for result in chunk.results:
+                if result['external']:
+                    chunk.output += '\n' + self.format(chunk, 'external', content=result['data'])
+                elif result['mime'] == 'text/latex':
+                    match = re.match(r'(?s)^\s*[$]{1,2}(.*?)[$]{1,2}\s*$', result['data'])
+                    if match:
+                        chunk.output += '\n' + self.format(chunk, 'math', content=match.group(1))
+                    else:
+                        chunk.output += '\n' + self.format(chunk, 'text', content=result['data'])
+                else:
+                    chunk.output += '\n' + self.format(chunk, 'text', content=result['data'])
