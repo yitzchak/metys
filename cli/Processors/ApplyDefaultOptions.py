@@ -1,7 +1,7 @@
 class ApplyDefaultOptions:
 
-    def __init__(self, doc):
-        self.doc = doc
+    def __init__(self, root):
+        self.root = root
 
     def __enter__(self):
         return self
@@ -10,8 +10,11 @@ class ApplyDefaultOptions:
         pass
 
     def apply(self):
-        for chunk in self.doc.chunks:
+        for chunk in self.root.chunks:
             options = {}
-            options.update(self.doc.options)
+            options.update(self.root.options)
             options.update(chunk.options)
             chunk.options = options
+            if (chunk.type == 'group'):
+                with ApplyDefaultOptions(chunk) as p:
+                    p.apply()

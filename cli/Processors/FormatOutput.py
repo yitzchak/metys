@@ -16,8 +16,8 @@ class FormatOutput:
         },
     }
 
-    def __init__(self, doc):
-        self.doc = doc
+    def __init__(self, root):
+        self.root = root
 
     def __enter__(self):
         return self
@@ -26,8 +26,11 @@ class FormatOutput:
         pass
 
     def apply(self):
-        for chunk in self.doc.chunks:
-            if chunk.type == 'code':
+        for chunk in self.root.chunks:
+            if chunk.type == 'group':
+                with FormatOutput(chunk) as p:
+                    p.apply()
+            elif chunk.type == 'code':
                 chunk.output = ''
                 self.output_code(chunk)
                 self.output_results(chunk)

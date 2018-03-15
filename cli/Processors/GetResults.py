@@ -5,8 +5,8 @@ import os
 
 class GetResults(object):
 
-    def __init__(self, doc):
-        self.doc = doc
+    def __init__(self, root):
+        self.root = root
 
     def __enter__(self):
         return self
@@ -15,8 +15,11 @@ class GetResults(object):
         pass
 
     def apply(self):
-        for chunk in self.doc.chunks:
-            if chunk.type == 'code' and chunk.options['results']:
+        for chunk in self.root.chunks:
+            if chunk.type == 'group':
+                with GetResults(chunk) as p:
+                    p.apply()
+            elif chunk.type == 'code' and chunk.options['results']:
                 chunk.results = []
                 for msg in chunk.messages:
                     result = self.get_result(chunk, msg)
@@ -25,7 +28,7 @@ class GetResults(object):
 
     def get_result(self, chunk, msg):
         if 'content' in msg and 'data' in msg['content']:
-            for type in self.doc.types:
+            for type in chunk.options['types']:
                 if type['mime'] in msg['content']['data']:
                     data = msg['content']['data'][type['mime']]
                     result = {}
@@ -42,6 +45,6 @@ class GetResults(object):
         ext = mimetypes.guess_extension(mime)
         if ext:
             name += ext
-        with open(os.path.join(self.doc.root, name), mode) as f:
+        with open(os.path.join('.', name), mode) as f:
             f.write(data)
         return name

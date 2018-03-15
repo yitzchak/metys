@@ -3,26 +3,15 @@ import re
 import shlex
 import urllib
 
-
-class Chunk(object):
-    def __init__(self, type=None, input=None, options=None):
-        self.options = {}
-        self.type = type
-        if options:
-            self.options.update(options)
-        self.input = input if input else ''
-
+from Chunk import Chunk
 
 class ParseInput(object):
 
-    def __init__(self, doc, source=None, options=None):
-        self.doc = doc
-        self.source = source if source else doc.source
-        self.options = options if options else doc.options
+    def __init__(self, root):
+        self.root = root
+        self.stack = [root]
 
     def __enter__(self):
-        self.default_key = 'name' if self.options['parser'] == 'noweb' else 'kernel'
-        self.read()
         return self
 
     def __exit__(self, type, value, traceback):
@@ -30,30 +19,40 @@ class ParseInput(object):
 
     def read(self):
         try:
-            sourcefile = io.open(self.source, 'r', encoding='utf-8')
-            self.contents = sourcefile.read()
+            sourcefile = io.open(self.root.options['source'], 'r', encoding='utf-8')
+            self.root.input = sourcefile.read()
             sourcefile.close()
         except IOError:
-            sourcefile = urllib.request.urlopen(self.source)
-            self.contents = sourcefile.read().decode('utf-8')
+            sourcefile = urllib.request.urlopen(self.root.options['source'])
+            self.root.input = sourcefile.read().decode('utf-8')
             sourcefile.close()
 
     def add_chunk(self, type=None, input=None, options=None):
         opts = {}
-        opts.update(self.options)
+        # opts.update(self.root.options)
         if options and isinstance(options, str):
             opts.update(self.parse_options(options))
         elif options:
             opts.update(options)
 
-        if type == 'source':
-            with ParseInput(self.doc, source=input, options=opts) as p:
+        chunk = Chunk(type, input, opts)
+        self.stack[-1].chunks.append(chunk)
+
+        if 'source' in opts:
+            with ParseInput(chunk) as p:
                 p.apply()
-        else:
-            self.doc.chunks.append(Chunk(type, input, opts))
+        return chunk
+
+    def start_chunk(self, type=None, input=None, options=None):
+        chunk = self.add_chunk(type, input, options)
+        self.stack.append(chunk)
+        return chunk
+
+    def end_chunk(self):
+        self.stack.pop()
 
     def add_input(self, input):
-        self.doc.chunks[-1].input += input
+        self.root.chunks[-1].input += input
 
     def parse_options(self, value):
         options = {}
@@ -74,20 +73,28 @@ class ParseInput(object):
         return shlex.split(value)[0]
 
     def parse_metys(self):
-        parts = re.split(r'(?s)<\|(.*?)([@|:])(.*?)\|>', self.contents)
+        self.start_chunk(type='text')
+
+        parts = re.split(r'(?s)(<\|.*?[@|:]|\|>)', self.root.input)
         for i in range(len(parts)):
-            sub = i % 4
+            sub = i % 2
             if sub == 0:
-                self.add_chunk(type='text', input=parts[i])
-            elif sub == 1:
-                self.add_chunk(type='source' if parts[i+1] == '@' else 'code',
-                    input=parts[i+2], options=parts[i])
-                if parts[i+1] == '|':
-                    self.doc.chunks[-1].options['inline'] = True
+                self.stack[-1].input += parts[i]
+                self.end_chunk()
+            elif parts[i] == '|>':
+                self.start_chunk(type='text')
+            else:
+                chunk = self.start_chunk(type='group' if parts[i][-1] == '@' else 'code',
+                    options=parts[i][2:-1])
+                if parts[i][-1] == '|':
+                    chunk.options['inline'] = True
+                if chunk.type == 'group':
+                    self.start_chunk(type='text')
+
 
     def parse_noweb(self):
         self.add_chunk(type='text')
-        parts = re.split(r'(?m)^(?:<<(.*?)>>=|@)\s*$', self.contents)
+        parts = re.split(r'(?m)^(?:<<(.*?)>>=|@)\s*$', self.root.input)
         for i in range(len(parts)):
             sub = i % 2
             if sub == 0:
@@ -98,8 +105,7 @@ class ParseInput(object):
                 self.add_chunk(type='text')
 
     def parse_markdown(self):
-        parts = re.split(r'(?ms)(?P<fence>^```|(?<!`)`)\{([^}]+)\}(.*?)(?P=fence)', self.contents)
-        print(parts)
+        parts = re.split(r'(?ms)(?P<fence>^```|(?<!`)`)\{([^}]+)\}(.*?)(?P=fence)', self.root.input)
         for i in range(len(parts)):
             sub = i % 4
             if sub == 0:
@@ -110,10 +116,24 @@ class ParseInput(object):
                     chunk.options['inline'] = True
 
     def apply(self):
-        print('Parsing ' + self.source)
-        if self.options['parser'] == 'noweb':
-            self.parse_noweb()
-        elif self.options['parser'] == 'markdown':
-            self.parse_markdown()
-        else:
-            self.parse_metys()
+        print('Parsing ' + self.root.options['source'])
+
+        if 'parser' not in self.root.options:
+            if re.search(r'(?i)\..*nw$', self.root.options['source']):
+                self.root.options['parser'] = 'noweb'
+            elif re.search(r'(?i)\..*md$', self.root.options['source']):
+                self.root.options['parser'] = 'markdown'
+            else:
+                self.root.options['parser'] = 'metys'
+
+        self.default_key = 'name' if self.root.options['parser'] == 'noweb' else 'kernel'
+
+        self.read()
+
+        if self.root.type == 'group':
+            if self.root.options['parser'] == 'noweb':
+                self.parse_noweb()
+            elif self.root.options['parser'] == 'markdown':
+                self.parse_markdown()
+            else:
+                self.parse_metys()

@@ -35,9 +35,9 @@ class Kernel(object):
 
 
 class EvaluateCode(object):
-    def __init__(self, doc):
+    def __init__(self, root):
         self.kernels = {}
-        self.doc = doc
+        self.root = root
 
     def __enter__(self):
         return self
@@ -47,8 +47,11 @@ class EvaluateCode(object):
             kernel.shutdown()
 
     def apply(self):
-        for chunk in self.doc.chunks:
-            if chunk.type == 'code' and chunk.options['evaluate']:
+        for chunk in self.root.chunks:
+            if (chunk.type == 'group'):
+                with EvaluateCode(chunk) as p:
+                    p.apply()
+            elif chunk.type == 'code' and chunk.options['evaluate']:
                 self.execute_chunk(chunk)
 
     def execute_chunk(self, chunk):

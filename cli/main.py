@@ -1,6 +1,6 @@
 import Processors
 import argparse
-from Document import Document
+from Chunk import Chunk
 
 
 ap = argparse.ArgumentParser()
@@ -11,7 +11,21 @@ ap.add_argument('--kernel')
 ap.add_argument('--parser')
 args = ap.parse_args()
 
-doc = Document(args.source)
+doc = Chunk(type='group', options={
+    'echo': True,
+    'evaluate': True,
+    'inline': False,
+    'results': True,
+    'source': args.source,
+    'name': 'doc',
+    'types': [
+        {'mime': 'application/pdf', 'external': True},
+        {'mime': 'image/png', 'external': True},
+        {'mime': 'image/jpeg', 'external': True},
+        {'mime': 'text/latex', 'external': False},
+        {'mime': 'text/plain', 'external': False}
+    ]
+})
 
 if args.kernel != None:
     doc.options['kernel'] = args.kernel
@@ -29,8 +43,8 @@ with Processors.ParseInput(doc) as p:
 with Processors.NameChunks(doc) as p:
     p.apply()
 
-# with Processors.ApplyDefaultOptions(doc) as p:
-#     p.apply()
+with Processors.ApplyDefaultOptions(doc) as p:
+    p.apply()
 
 with Processors.EvaluateCode(doc) as p:
     p.apply()
