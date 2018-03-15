@@ -1,0 +1,42 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{metys}[2018/03/13 v0.1 A package to generate and include values from a Metys document.]
+
+\RequirePackage{kvoptions}
+\RequirePackage{verbatim}
+\RequirePackage{etoolbox}
+
+\DeclareBoolOption[true]{echo}
+\DeclareBoolOption[true]{evaluate}
+\DeclareBoolOption[true]{results}
+\DeclareStringOption[latex]{format}
+\DeclareStringOption[python]{kernel}
+\DeclareStringOption{session}
+
+\ProcessKeyvalOptions*\relax
+
+\makeatletter
+
+\def\metys@output{\jobname-metys.tmt}
+
+\newwrite\metys@out
+\newcounter{metys@count}
+
+\AtBeginDocument{\immediate\openout \metys@out \metys@output }
+\AtEndDocument{\immediate\closeout\metys@out}
+
+\newenvironment{metys}%
+{\@bsphack
+\stepcounter{metys@count}
+\def\metys@input{\jobname-metys-\themetys@count.tex}
+\bgroup%
+\immediate\write\metys@out{<|kernel=\metys@kernel,echo=\ifmetys@echo True\else False\fi,output="\metys@input":}
+\let\do\@makeother\dospecials\catcode`\^^M\active
+\def\verbatim@processline{%
+\immediate\write\metys@out{\the\verbatim@line}}%
+\verbatim@start}%
+{\@esphack%
+\immediate\write\metys@out{|>}%
+\egroup%
+\IfFileExists{\metys@input}{\input\metys@input}{}}
+
+\makeatother
