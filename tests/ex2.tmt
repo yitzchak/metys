@@ -1,0 +1,26 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+
+\begin{document}
+<|kernel=maxima,echo=False@
+Given a cubic of the form
+<|:eq1:z^3+a*z^2+b*z+c=0;|>
+let <||sub1:z=x-phi;|>, then the cubic becomes
+<|:eq2:subst(sub1,eq1);|>
+which after expansion is
+<|:eq3:collectterms(expand(eq2),x);|>
+The <||x^2;|> term can be eliminated by letting <||sub2:phi=a/3;|>. Then
+the cubic becomes
+<|:eq4:subst(sub2,eq3);|>
+Now let <||p=coeff(eq4,x,1);|> and <||q=coeff(eq4,x,0);|>. Now
+we have
+<|:eq5:x^3+p*x+q=0;|>
+Using Vieta's Substitution of <||sub3:x=lambda-p/(3*lambda);|> this becomes
+<|:eq6:subst(sub3,eq5);|>
+After expansions this is now
+<|:eq7:collectterms(expand(eq6),x);|>
+Multplying by <||m:lambda^3;|>
+<|:eq8:expand(m*eq7);|>
+|>
+\end{document}
