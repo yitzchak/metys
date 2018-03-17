@@ -13,7 +13,7 @@ which after expansion is
 The <||x^2;|> term can be eliminated by letting <||sub2:phi=a/3;|>. Then
 the cubic becomes
 <|:eq4:subst(sub2,eq3);|>
-Now let <||p=coeff(eq4,x,1);|> and <||q=coeff(eq4,x,0);|>. Now
+Now let <||p=coeff(lhs(eq4),x,1);|> and <||q=coeff(lhs(eq4),x,0);|>. Now
 we have
 <|:eq5:x^3+p*x+q=0;|>
 Using Vieta's Substitution of <||sub3:x=lambda-p/(3*lambda);|> this becomes

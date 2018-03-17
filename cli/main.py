@@ -18,12 +18,12 @@ doc = Chunk(type='group', options={
     'results': True,
     'input': args.input,
     'name': 'doc',
-    'types': [
-        {'mime': 'application/pdf', 'external': True},
-        {'mime': 'image/png', 'external': True},
-        {'mime': 'image/jpeg', 'external': True},
-        {'mime': 'text/latex', 'external': False},
-        {'mime': 'text/plain', 'external': False}
+    'mimetypes': [
+        'application/pdf',
+        'image/png',
+        'image/jpeg',
+        'text/latex',
+        'text/plain'
     ]
 })
 
@@ -47,9 +47,6 @@ with Processors.ApplyDefaultOptions(doc) as p:
     p.apply()
 
 with Processors.EvaluateCode(doc) as p:
-    p.apply()
-
-with Processors.GetResults(doc) as p:
     p.apply()
 
 with Processors.FormatOutput(doc) as p:
