@@ -1,6 +1,7 @@
 import Processors
 import argparse
 from Chunk import Chunk
+import os
 
 
 ap = argparse.ArgumentParser()
@@ -11,12 +12,15 @@ ap.add_argument('--kernel')
 ap.add_argument('--parser')
 args = ap.parse_args()
 
+dir, input = os.path.split(args.input)
+os.chdir(dir)
+
 doc = Chunk(type='group', options={
     'echo': True,
     'evaluate': True,
     'inline': False,
     'results': True,
-    'input': args.input,
+    'input': input,
     'name': 'doc',
     'mimetypes': [
         'application/pdf',
