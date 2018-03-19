@@ -85,12 +85,11 @@ class ParseInput(object):
                 self.start_chunk(type='text')
             else:
                 chunk = self.start_chunk(type='group' if parts[i][-1] == '@' else 'code',
-                    options=parts[i][2:-1])
+                                         options=parts[i][2:-1])
                 if parts[i][-1] == '|':
                     chunk.options['inline'] = True
                 if chunk.type == 'group':
                     self.start_chunk(type='text')
-
 
     def parse_noweb(self):
         self.add_chunk(type='text')
@@ -105,13 +104,15 @@ class ParseInput(object):
                 self.add_chunk(type='text')
 
     def parse_markdown(self):
-        parts = re.split(r'(?ms)(?P<fence>^```|(?<!`)`)\{([^}]+)\}(.*?)(?P=fence)', self.root.input)
+        parts = re.split(r'(?ms)(?P<fence>^```|(?<!`)`)\{([^}]+)\}(.*?)(?P=fence)',
+                         self.root.input)
         for i in range(len(parts)):
             sub = i % 4
             if sub == 0:
                 self.add_chunk(type='text', input=parts[i])
             elif sub == 1:
-                chunk = self.add_chunk(type='code', input=parts[i+2], options=parts[i+1])
+                chunk = self.add_chunk(type='code', input=parts[i+2],
+                                       options=parts[i+1])
                 if parts[i] == '`':
                     chunk.options['inline'] = True
 

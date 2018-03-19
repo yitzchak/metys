@@ -31,11 +31,11 @@ doc = Chunk(type='group', options={
     ]
 })
 
-if args.kernel != None:
+if args.kernel is not None:
     doc.options['kernel'] = args.kernel
-if args.parser != None:
+if args.parser is not None:
     doc.options['parser'] = args.parser
-if args.format != None:
+if args.format is not None:
     doc.options['format'] = args.format
 
 with Processors.ParseInput(doc) as p:
