@@ -28,7 +28,10 @@ doc = Chunk(type='group', options={
         'image/jpeg',
         'text/latex',
         'text/plain'
-    ]
+    ],
+    'math_env': 'equation',
+    'figure_env': 'figure',
+    'code_env': 'verbatim'
 })
 
 if args.kernel is not None:
