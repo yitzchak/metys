@@ -30,6 +30,21 @@ class DeduceOptions:
                         self.root.options['kernel'] = 'python'
                     else:
                         self.root.options['kernel'] = 'python'
+
+                if 'mimetypes' not in self.root.options:
+                    self.root.options['mimetypes'] = [
+                        'application/pdf',
+                        'image/png',
+                        'image/jpeg',
+                        'text/latex',
+                        'text/plain'
+                    ] if self.root.options['format'] == 'latex' else [
+                        'image/svg+xml',
+                        'image/png',
+                        'image/jpeg',
+                        'text/latex',
+                        'text/plain'
+                    ]
             for chunk in self.root.chunks:
                 with DeduceOptions(chunk) as p:
                     p.apply()

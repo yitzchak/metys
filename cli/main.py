@@ -29,13 +29,6 @@ doc = Chunk(type='group', options={
     'inline': False,
     'input': input,
     'math_env': 'equation',
-    'mimetypes': [
-        'application/pdf',
-        'image/png',
-        'image/jpeg',
-        'text/latex',
-        'text/plain'
-    ],
     'name': 'doc',
     'results': True
 })
