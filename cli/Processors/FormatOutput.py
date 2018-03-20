@@ -37,9 +37,16 @@ class FormatOutput(object):
                 if mimetype in msg['content']['data']:
                     content = msg['content']['data'][mimetype]
                     if mimetype == 'text/latex':
-                        match = re.match(r'(?s)^\s*[$]{1,2}(.*?)[$]{1,2}\s*$', content)
-                        mimetype = 'text/x.latex-math'
-                        content = match.group(1)
+                        parts = re.split(r'(?s)(?P<d>[$]{1,2})(.*?)(?P=d)', content)
+                        output = ''
+                        for i in range(len(parts)):
+                            sub = i % 3
+                            if i == 0:
+                                output += self.format(chunk, 'text/latex', None, parts[i])
+                            elif i == 2:
+                                output += self.format(chunk, 'text/x.latex-math', None, parts[i])
+                        return output
+
                     return self.format(chunk, mimetype, None, content)
         return ''
 
