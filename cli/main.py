@@ -17,10 +17,10 @@ dir, input = os.path.split(args.input)
 os.chdir(dir)
 
 doc = Chunk(type='group', options={
-    'wrap_math': True,
     'code_env': 'verbatim',
     'echo': True,
     'evaluate': True,
+    'expand_options': False,
     'figure_env': 'figure',
     'formatters': {
         'latex': LaTeXFormatter(),
@@ -30,7 +30,8 @@ doc = Chunk(type='group', options={
     'input': input,
     'math_env': 'equation',
     'name': 'doc',
-    'results': True
+    'results': True,
+    'wrap_math': True
 })
 
 if args.kernel is not None:

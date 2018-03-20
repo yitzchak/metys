@@ -30,7 +30,8 @@ class Kernel(object):
         chunk.messages = []
         if hasattr(self, 'language_info'):
             chunk.language_info = self.language_info
-        self.client.execute_interactive(chunk.input, store_history=False,
+        input = chunk.input.format(**chunk.options) if chunk.options['expand_options'] else chunk.input
+        self.client.execute_interactive(input, store_history=False,
             allow_stdin=False, output_hook=lambda msg: chunk.messages.append(msg) if msg['msg_type'] in ('display_data', 'execute_result', 'stream') else None)
 
 
