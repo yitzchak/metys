@@ -17,7 +17,7 @@ dir, input = os.path.split(args.input)
 os.chdir(dir)
 
 doc = Chunk(type='group', options={
-    'bare_math': False,
+    'wrap_math': True,
     'code_env': 'verbatim',
     'echo': True,
     'evaluate': True,

@@ -36,10 +36,10 @@ class LaTeXFormatter(Formatter):
             return format_str.format(name, **chunk.options)
 
         if mimetype == 'text/x.latex-math':
-            if chunk.options['bare_math']:
-                return value
-            format_str = '\\({0}\\)' if chunk.options['inline'] else '\\begin{{{math_env}}}\n{0}\\label{{eq:{name}}}\n\\end{{{math_env}}}'
-            return format_str.format(value, **chunk.options)
+            if chunk.options['wrap_math']:
+                format_str = '\\({0}\\)' if chunk.options['inline'] else '\\begin{{{math_env}}}\n{0}\\label{{eq:{name}}}\n\\end{{{math_env}}}'
+                return format_str.format(value, **chunk.options)
+            return value
 
         if chunk.options['code_env'] == 'minted' and pygments_lexer is not None:
             format_str = '\\mintinline{{{1}}}{{{0}}}' if chunk.options['inline'] else '\\begin{{minted}}{{{1}}}\n{0}\n\\end{{minted}}'
@@ -61,10 +61,10 @@ class MarkDownFormatter(Formatter):
             return format_str.format(name, **chunk.options)
 
         if mimetype == 'text/x.latex-math':
-            if chunk.options['bare_math']:
-                return value
-            format_str = '${0}$' if chunk.options['inline'] else '$$\n{0}\n$$'
-            return format_str.format(value, **chunk.options)
+            if chunk.options['wrap_math']:
+                format_str = '${0}$' if chunk.options['inline'] else '$$\n{0}\n$$'
+                return format_str.format(value, **chunk.options)
+            return value
 
         format_str = '`{0}`' if chunk.options['inline'] else '```{kernel}\n{0}\n```'
         return format_str.format(value, **chunk.options)
