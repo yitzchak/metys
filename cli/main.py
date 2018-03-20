@@ -1,6 +1,7 @@
 import Processors
 import argparse
 from Chunk import Chunk
+from Formatter import LaTeXFormatter, MarkDownFormatter
 import os
 
 
@@ -16,12 +17,18 @@ dir, input = os.path.split(args.input)
 os.chdir(dir)
 
 doc = Chunk(type='group', options={
+    'bare_math': False,
+    'code_env': 'verbatim',
     'echo': True,
     'evaluate': True,
+    'figure_env': 'figure',
+    'formatters': {
+        'latex': LaTeXFormatter(),
+        'markdown': MarkDownFormatter()
+    },
     'inline': False,
-    'results': True,
     'input': input,
-    'name': 'doc',
+    'math_env': 'equation',
     'mimetypes': [
         'application/pdf',
         'image/png',
@@ -29,9 +36,8 @@ doc = Chunk(type='group', options={
         'text/latex',
         'text/plain'
     ],
-    'math_env': 'equation',
-    'figure_env': 'figure',
-    'code_env': 'verbatim'
+    'name': 'doc',
+    'results': True
 })
 
 if args.kernel is not None:
