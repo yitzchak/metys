@@ -18,6 +18,7 @@ class WriteOutput:
         pass
 
     def apply(self):
+        print('Writing ' + self.root.options['output'])
         for chunk in self.root.chunks:
             self.write_chunk(chunk)
 
