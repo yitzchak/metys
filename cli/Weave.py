@@ -4,28 +4,32 @@ from Formatter import LaTeXFormatter, MarkDownFormatter
 import os
 
 
-def Weave(input, options=None):
-    dir, base = os.path.split(input)
-    if dir != '':
-        os.chdir(dir)
-
+def Weave(options=None):
     opts = {
         'code_env': 'verbatim',
         'echo': True,
         'evaluate': True,
         'expand_options': False,
         'figure_env': 'figure',
+        'figure_path': 'figure',
+        'figure_prefix': 'fig:',
         'formatters': {
             'latex': LaTeXFormatter(),
             'markdown': MarkDownFormatter()
         },
         'inline': False,
-        'input': base,
         'math_env': 'equation',
+        'math_prefix': 'eq:',
         'name': 'doc',
         'results': True,
         'wrap_math': True
     }
+
+    if 'input' in options:
+        dir, base = os.path.split(options['input'])
+        if dir != '':
+            os.chdir(dir)
+            options['input'] = base
 
     if options is not None:
         opts.update(options)
