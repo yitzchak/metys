@@ -56,12 +56,11 @@ class ParseInput(object):
 
     def parse_options(self, value):
         options = {}
-        for opt in value.split(','):
-            parts = list(map(lambda x: x.strip(), opt.split('=')))
-            if len(parts) == 1:
-                options[self.default_key] = self.parse_value(parts[0])
+        for match in re.finditer(r'(?s)(\w+)(?:\s*=\s*("(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\'|[^,=\'" \t\n]*))?', value):
+            if match.group(2) is None:
+                options[self.default_key] = self.parse_value(match.group(1))
             else:
-                options[parts[0]] = self.parse_value(parts[1])
+                options[match.group(1)] = self.parse_value(match.group(2))
 
         return options
 
@@ -70,7 +69,7 @@ class ParseInput(object):
             return True
         if value == 'False':
             return False
-        return shlex.split(value)[0]
+        return shlex.split(value)[0] if value.startswith('"') or value.startswith("'") else value
 
     def parse_metys(self):
         self.start_chunk(type='text')

@@ -1,3 +1,4 @@
+<|code_env=Verbatim,code_env_options='frame=single'@
 \documentclass{article}
 
 \usepackage{graphicx,fancyvrb}
@@ -13,3 +14,4 @@ plot2d([sin, cos, tan], [x, -10, 10], [y, -10, 10],
 <|input=sub.tmt@|>
 
 \end{document}
+|>
