@@ -32,7 +32,7 @@ ap.add_argument('--figure-env', help='Default figure environment for LaTeX.')
 
 ap.add_argument('--figure-path', help='Default figure directory.')
 
-ap.add_argument('--figure-pos', help='Default figure postion for LaTeX.')
+ap.add_argument('--figure-env-options', help='Default figure environment options for LaTeX.')
 
 ap.add_argument('--figure-prefix', help='Default figure label prefix for LaTeX.')
 

@@ -26,15 +26,24 @@ class Formatter(object):
 
 class LaTeXFormatter(Formatter):
 
+    def format_options(self, options, key):
+        if key not in options:
+            return ''
+
+        if isinstance(options[key], dict):
+            return '[' + ', '.join(k + '=' + v for k, v in options[key].items()) + ']'
+        return '[' + options[key] + ']'
+
     def format(self, chunk, mimetype, pygments_lexer, value):
         if mimetype in ('text/plain', 'text/latex', 'text/tex'):
             return value
 
         if mimetype in ('application/pdf', 'image/png', 'image/jpeg'):
-            format_str = '\\includegraphics{{{0}}}' if 'caption' not in chunk.options else '\\begin{{{figure_env}}}{1}\n\\includegraphics{{{0}}}\n\caption{{{caption}}}\\label{{{figure_prefix}{name}}}\n\\end{{{figure_env}}}'
-            opts = '[{figure_pos}]'.format(**chunk.options) if 'figure_pos' in chunk.options else ''
+            graphics_options = self.format_options(chunk.options, 'graphics_options')
+            figure_env_options = self.format_options(chunk.options, 'figure_env_options')
+            format_str = '\\includegraphics{2}{{{0}}}' if 'figure_caption' not in chunk.options else '\\begin{{{figure_env}}}{1}\n\\includegraphics{2}{{{0}}}\n\caption{{{figure_caption}}}\\label{{{figure_prefix}{name}}}\n\\end{{{figure_env}}}'
             name = self.save_external(chunk, mimetype, value)
-            return format_str.format(name, opts, **chunk.options)
+            return format_str.format(name, figure_env_options, graphics_options, **chunk.options)
 
         if mimetype == 'text/x.latex-math':
             if chunk.options['wrap_math']:
@@ -42,14 +51,14 @@ class LaTeXFormatter(Formatter):
                 return format_str.format(value, **chunk.options)
             return value
 
-        opts = '[{code_env_options}]'.format(**chunk.options) if 'code_env_options' in chunk.options else ''
+        code_env_options = self.format_options(chunk.options, 'code_env_options')
 
         if chunk.options['code_env'] == 'minted':
             format_str = '\\mintinline{1}{{{2}}}{{{0}}}' if chunk.options['inline'] else '\\begin{{minted}}{1}{{{2}}}\n{0}\n\\end{{minted}}'
-            return format_str.format(value.strip('\n'), opts, 'text' if pygments_lexer is None else pygments_lexer, **chunk.options)
+            return format_str.format(value.strip('\n'), code_env_options, 'text' if pygments_lexer is None else pygments_lexer, **chunk.options)
 
         format_str = '\\begin{{{code_env}}}{1}\n{0}\n\\end{{{code_env}}}'
-        return format_str.format(value.strip('\n'), opts, **chunk.options)
+        return format_str.format(value.strip('\n'), code_env_options, **chunk.options)
 
 
 class MarkDownFormatter(Formatter):
@@ -59,7 +68,7 @@ class MarkDownFormatter(Formatter):
             return value
 
         if mimetype in ('image/svg+xml', 'image/png', 'image/jpeg'):
-            format_str = '[{0}]({caption})'
+            format_str = '[{0}]({figure_caption})'
             name = self.save_external(chunk, mimetype, value)
             return format_str.format(name, **chunk.options)
 

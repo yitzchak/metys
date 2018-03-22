@@ -56,20 +56,31 @@ class ParseInput(object):
 
     def parse_options(self, value):
         options = {}
-        for match in re.finditer(r'(?s)(\w+)(?:\s*=\s*("(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\'|[^,=\'" \t\n]*))?', value):
-            if match.group(2) is None:
-                options[self.default_key] = self.parse_value(match.group(1))
+        for match in re.finditer(r'(?s)(?P<name>\w+)(?:(?:\.(?P<sub>\w+))?\s*=\s*(?P<value>"(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\'|[^,=\'"\s]*))?', value):
+            if match.group('value') is None:
+                options[self.default_key] = self.parse_value(match.group('name'))
+            elif match.group('sub') is None:
+                options[match.group('name')] = self.parse_value(match.group('value'))
             else:
-                options[match.group(1)] = self.parse_value(match.group(2))
+                if match.group('name') not in options or not isinstance(options[match.group('name')], dict):
+                    options[match.group('name')] = {}
+                options[match.group('name')][match.group('sub')] = self.parse_value(match.group('value'))
 
         return options
 
     def parse_value(self, value):
-        if value == 'True':
+        if value.startswith('"') or value.startswith("'"):
+            return shlex.split(value)[0]
+
+        lv = value.lower()
+        if lv == 'true':
             return True
-        if value == 'False':
+        elif lv == 'false':
             return False
-        return shlex.split(value)[0] if value.startswith('"') or value.startswith("'") else value
+        elif lv == 'none':
+            return None
+        else:
+            return value
 
     def parse_metys(self):
         self.start_chunk(type='text')

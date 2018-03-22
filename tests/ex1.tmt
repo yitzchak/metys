@@ -1,4 +1,4 @@
-<|code_env=Verbatim,code_env_options='frame=single'@
+<|code_env=Verbatim, code_env_options.frame=single@
 \documentclass{article}
 
 \usepackage{graphicx,fancyvrb}
@@ -6,7 +6,7 @@
 \begin{document}
 Wibble <|maxima,echo=False|2^^3;|> gronk
 
-<|maxima, caption="Basic Trigonometric Functions":
+<|maxima, figure_caption="Basic Trigonometric Functions", graphics_options.width=5in:
 plot2d([sin, cos, tan], [x, -10, 10], [y, -10, 10],
   [pdf_file, "maxplot.pdf"]);
 |>

@@ -23,6 +23,11 @@ class DeduceOptions:
                     else:
                         self.root.options['format'] = 'latex'
 
+                if 'graphics_options' not in self.root.options:
+                    self.root.options['graphics_options'] = {
+                        'width': '\\linewidth' if self.root.options['format'] == 'latex' else '100%'
+                    }
+
                 if 'kernel' not in self.root.options:
                     if re.search(r'(?i)\.R(nw|md|mt)$', input):
                         self.root.options['kernel'] = 'R'
