@@ -1,9 +1,15 @@
-\documentclass{article}
+<|kernel=maxima, echo=False, math_env=equation*@
+\documentclass{amsart}
 
 \usepackage{graphicx}
 
 \begin{document}
-<|kernel=maxima,echo=False@
+<|results=false:
+texfrac(e) := block([a, b],
+  [a, b]:args(e),
+  concat("\\frac{",tex1(a),"}{",tex1(b),"}"));
+texput('?mquotient,texfrac);
+|>
 Given a cubic of the form
 <|:eq1:z^3+a*z^2+b*z+c=0;|>
 let <||sub1:z=x-phi;|>, then the cubic becomes
@@ -22,5 +28,5 @@ After expansions this is now
 <|:eq7:collectterms(expand(eq6),x);|>
 Multplying by <||m:lambda^3;|>
 <|:eq8:expand(m*eq7);|>
-|>
 \end{document}
+|>

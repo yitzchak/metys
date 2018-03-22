@@ -6,7 +6,8 @@
 \begin{document}
 Wibble <|maxima,echo=False|2^^3;|> gronk
 
-<|maxima, figure_caption="Basic Trigonometric Functions", graphics_options.width=5in:
+<|maxima, figure_caption="Basic Trigonometric Functions",
+  graphics_options.width=5in, name=basic-trig:
 plot2d([sin, cos, tan], [x, -10, 10], [y, -10, 10],
   [pdf_file, "maxplot.pdf"]);
 |>

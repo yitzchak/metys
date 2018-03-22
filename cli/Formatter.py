@@ -26,39 +26,84 @@ class Formatter(object):
 
 class LaTeXFormatter(Formatter):
 
-    def format_options(self, options, key):
-        if key not in options:
-            return ''
+    graphics_format = '\\includegraphics{graphics_options}{{{0}}}'
 
-        if isinstance(options[key], dict):
-            return '[' + ', '.join(k + '=' + v for k, v in options[key].items()) + ']'
-        return '[' + options[key] + ']'
+    figure_format = '''\\begin{{{figure_env}}}{figure_env_options}
+\\includegraphics{graphics_options}{{{0}}}
+\\caption{{{figure_caption}}}
+\\label{{{figure_prefix}{name}-{label_number}}}
+\\end{{{figure_env}}}'''
+
+    math_format = '''\\begin{{{math_env}}}
+{0}
+\\label{{{math_prefix}{name}-{label_number}}}
+\\end{{{math_env}}}'''
+
+    inline_math_format = '\\({0}\\)'
+
+    minted_format = '''\\begin{{minted}}{code_env_options}{{{pygments_lexer}}}
+{0}
+\\end{{minted}}'''
+
+    inline_minted_format = '\\mintinline{code_env_options}{{{pygments_lexer}}}{{{0}}}'
+
+    code_format = '''\\begin{{{code_env}}}{code_env_options}
+{0}
+\\end{{{code_env}}}'''
+
+    def add_label(self, chunk, name):
+        if hasattr(chunk, 'labels'):
+            if name in chunk.labels:
+                chunk.labels[name] += 1
+            else:
+                chunk.labels[name] = 1
+        else:
+            chunk.labels = {}
+            chunk.labels[name] = 1
+
+        return chunk.labels[name]
+
+    def format_options(self, options, key):
+        opt_format = '[{0}]'
+
+        if key not in options:
+            options[key] = ''
+        elif isinstance(options[key], dict):
+            options[key] = opt_format.format(', '.join(k + '=' + v for k, v in options[key].items()))
+        else:
+            key = opt_format.format(options[key])
 
     def format(self, chunk, mimetype, pygments_lexer, value):
         if mimetype in ('text/plain', 'text/latex', 'text/tex'):
             return value
 
+        options = chunk.options.copy()
+
+        self.format_options(options, 'graphics_options')
+        self.format_options(options, 'figure_env_options')
+        self.format_options(options, 'code_env_options')
+
+        options['pygments_lexer'] = 'text' if pygments_lexer is None else pygments_lexer
+
         if mimetype in ('application/pdf', 'image/png', 'image/jpeg'):
-            graphics_options = self.format_options(chunk.options, 'graphics_options')
-            figure_env_options = self.format_options(chunk.options, 'figure_env_options')
-            format_str = '\\includegraphics{2}{{{0}}}' if 'figure_caption' not in chunk.options else '\\begin{{{figure_env}}}{1}\n\\includegraphics{2}{{{0}}}\n\caption{{{figure_caption}}}\\label{{{figure_prefix}{name}}}\n\\end{{{figure_env}}}'
-            name = self.save_external(chunk, mimetype, value)
-            return format_str.format(name, figure_env_options, graphics_options, **chunk.options)
-
-        if mimetype == 'text/x.latex-math':
+            format_str = self.figure_format if 'figure_caption' in options else self.graphics_format
+            value = self.save_external(chunk, mimetype, value)
+            options['label_number'] = self.add_label(chunk, options['figure_prefix'])
+        elif mimetype == 'text/x.latex-math':
             if chunk.options['wrap_math']:
-                format_str = '\\({0}\\)' if chunk.options['inline'] else '\\begin{{{math_env}}}\n{0}\\label{{{math_prefix}{name}}}\n\\end{{{math_env}}}'
-                return format_str.format(value, **chunk.options)
-            return value
+                if options['inline']:
+                    format_str = self.inline_math_format
+                else:
+                    format_str = self.math_format
+                    options['label_number'] = self.add_label(chunk, options['math_prefix'])
+            else:
+                return value
+        elif chunk.options['code_env'] == 'minted':
+            format_str = self.inline_minted_format if chunk.options['inline'] else self.minted_format
+        else:
+            format_str = self.code_format
 
-        code_env_options = self.format_options(chunk.options, 'code_env_options')
-
-        if chunk.options['code_env'] == 'minted':
-            format_str = '\\mintinline{1}{{{2}}}{{{0}}}' if chunk.options['inline'] else '\\begin{{minted}}{1}{{{2}}}\n{0}\n\\end{{minted}}'
-            return format_str.format(value.strip('\n'), code_env_options, 'text' if pygments_lexer is None else pygments_lexer, **chunk.options)
-
-        format_str = '\\begin{{{code_env}}}{1}\n{0}\n\\end{{{code_env}}}'
-        return format_str.format(value.strip('\n'), code_env_options, **chunk.options)
+        return format_str.format(value.strip('\n'), **options)
 
 
 class MarkDownFormatter(Formatter):
