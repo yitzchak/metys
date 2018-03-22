@@ -39,6 +39,8 @@ ap.add_argument('--figure-prefix', help='Default figure label prefix for LaTeX.'
 ap.add_argument('--format', choices=['latex', 'markdown'],
                 help='Format of output file.')
 
+ap.add_argument('--graphics-options', help='Default graphics options for LaTeX.')
+
 ap.add_argument('--kernel', help='Default Jupyter kernel.')
 
 ap.add_argument('--math-env', help='Default display math environment for LaTeX.')
