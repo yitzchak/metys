@@ -71,7 +71,7 @@ class LaTeXFormatter(Formatter):
         elif isinstance(options[key], dict):
             options[key] = opt_format.format(', '.join(k + '=' + v for k, v in options[key].items()))
         else:
-            key = opt_format.format(options[key])
+            options[key] = opt_format.format(options[key])
 
     def format(self, chunk, mimetype, pygments_lexer, value):
         if mimetype in ('text/plain', 'text/latex', 'text/tex'):
