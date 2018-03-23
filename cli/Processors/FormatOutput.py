@@ -47,7 +47,7 @@ class FormatOutput(object):
                                 output += self.format(chunk, 'text/x.latex-math', None, parts[i])
                         return output
                     return self.format(chunk, mimetype, None, content)
-        elif msg['msg_type'] == 'stream' and chunk.options[msg['content']['name']]:
+        elif msg['msg_type'] == 'stream' and chunk.options[msg['content']['name'] + '_echo']:
             return self.format(chunk, 'text/x.' + msg['content']['name'], None, msg['content']['text'])
         return ''
 

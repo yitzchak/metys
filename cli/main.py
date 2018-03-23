@@ -84,7 +84,8 @@ g.add_argument('--wrap-math', dest='wrap_math', action='store_true',
 g.add_argument('--no-wrap-math', dest='wrap_math', action='store_false',
                help='Disable wrapping of math results in appropriate format environment.')
 
-ap.set_defaults(echo=None, evaluate=None, expand_options=None, results=None,
+ap.set_defaults(code_echo=None, evaluate=None, expand_options=None,
+                results=None, stdout_echo=None, stderr_echo=None,
                 wrap_math=None)
 
 args = ap.parse_args()

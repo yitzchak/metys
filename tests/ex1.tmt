@@ -1,15 +1,32 @@
-<|code_env=Verbatim, code_env_options.frame=single@
+<|figure_options=H, code_env=Verbatim, code_env_options.frame=single,
+  code_env_options.labelposition=topline, code_env_options.label=code,
+  stderr_echo=true, stderr_env=Verbatim, stderr_env_options.frame=single,
+  stderr_env_options.labelposition=topline,
+  stderr_env_options.formatcom=\color{red}, stderr_env_options.label=stderr,
+  stdout_echo=true, stdout_env=Verbatim, stdout_env_options.frame=single,
+  stdout_env_options.labelposition=topline,
+  stdout_env_options.formatcom=\color{blue}, stdout_env_options.label=stdout @
 \documentclass{article}
 
-\usepackage{graphicx,fancyvrb}
+\usepackage{graphicx,fancyvrb,xcolor,float,fancyref}
 
 \begin{document}
-Wibble <|maxima,echo=False|2^^3;|> gronk
 
-<|maxima, figure_caption="Basic Trigonometric Functions",
-  graphics_options.width=5in, name=basic-trig:
-plot2d([sin, cos, tan], [x, -10, 10], [y, -10, 10],
+The following code will graph some basic trigonometric functions. See
+\fref{fig:basic-trig-1} for the results.
+<|maxima, figure_caption="Basic Trigonometric Functions", name=basic-trig:
+plot2d([sin, cos, tan], [x, -2*%pi, 2*%pi], [y, -4, 4],
   [pdf_file, "maxplot.pdf"]);
+|>
+
+The following code will graph a parametric Klein bottle. See
+\fref{fig:klein-bottle-1} for the results.
+<|maxima, figure_caption="Klein Bottle", name=klein-bottle:
+expr_1: 5*cos(x)*(cos(x/2)*cos(y)+sin(x/2)*sin(2*y)+3)-10$
+expr_2: -5*sin(x)*(cos(x/2)*cos(y)+sin(x/2)*sin(2*y)+3)$
+expr_3: 5*(-sin(x/2)*cos(y)+cos(x/2)*sin(2*y))$
+plot3d([expr_1, expr_2, expr_3], [x, -%pi, %pi], [y, -%pi, %pi],
+  [grid, 50, 50], [pdf_file, "maxplot.pdf"]);
 |>
 
 <|input=sub.tmt@|>

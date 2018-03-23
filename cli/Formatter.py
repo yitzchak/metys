@@ -41,23 +41,15 @@ class LaTeXFormatter(Formatter):
 
     inline_math_format = '\\({0}\\)'
 
-    minted_format = '''\\begin{{minted}}{code_env_options}{{{pygments_lexer}}}
+    minted_format = '''\\begin{{minted}}{verb_env_options}{{{pygments_lexer}}}
 {0}
 \\end{{minted}}'''
 
-    inline_minted_format = '\\mintinline{code_env_options}{{{pygments_lexer}}}{{{0}}}'
+    inline_minted_format = '\\mintinline{verb_env_options}{{{pygments_lexer}}}{{{0}}}'
 
-    code_format = '''\\begin{{{code_env}}}{code_env_options}
+    verb_format = '''\\begin{{{verb_env}}}{verb_env_options}
 {0}
-\\end{{{code_env}}}'''
-
-    stderr_format = '''\\begin{{{stderr_env}}}{stderr_env_options}
-{0}
-\\end{{{stderr_env}}}'''
-
-    stdout_format = '''\\begin{{{stdout_env}}}{stdout_env_options}
-{0}
-\\end{{{stdout_env}}}'''
+\\end{{{verb_env}}}'''
 
     def add_label(self, chunk, name):
         if hasattr(chunk, 'labels'):
@@ -87,9 +79,11 @@ class LaTeXFormatter(Formatter):
 
         options = chunk.options.copy()
 
-        self.format_options(options, 'graphics_options')
-        self.format_options(options, 'figure_env_options')
         self.format_options(options, 'code_env_options')
+        self.format_options(options, 'figure_env_options')
+        self.format_options(options, 'graphics_options')
+        self.format_options(options, 'stderr_env_options')
+        self.format_options(options, 'stdout_env_options')
 
         options['pygments_lexer'] = 'text' if pygments_lexer is None else pygments_lexer
 
@@ -106,14 +100,21 @@ class LaTeXFormatter(Formatter):
                     options['label_number'] = self.add_label(chunk, options['math_prefix'])
             else:
                 return value
-        elif mimetype == 'text/x.stderr':
-            format_str = self.stderr_format
-        elif mimetype == 'text/x.stdout':
-            format_str = self.stdout_format
-        elif chunk.options['code_env'] == 'minted':
-            format_str = self.inline_minted_format if chunk.options['inline'] else self.minted_format
         else:
-            format_str = self.code_format
+            if mimetype == 'text/x.stderr':
+                options['verb_env'] = options['stderr_env']
+                options['verb_env_options'] = options['stderr_env_options']
+            elif mimetype == 'text/x.stdout':
+                options['verb_env'] = options['stdout_env']
+                options['verb_env_options'] = options['stdout_env_options']
+            else:
+                options['verb_env'] = options['code_env']
+                options['verb_env_options'] = options['code_env_options']
+
+            if options['verb_env'] == 'minted':
+                format_str = self.inline_minted_format if options['inline'] else self.minted_format
+            else:
+                format_str = self.verb_format
 
         return format_str.format(value.strip('\n'), **options)
 

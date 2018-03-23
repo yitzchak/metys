@@ -1,1 +1,1 @@
-More quux! <|python,echo=False|2**3|> but not foo <|maxima,echo=False|x;|>
+More quux! <|python,code_echo=False|2**3|> but not foo <|maxima,code_echo=False|x;|>

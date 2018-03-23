@@ -1,4 +1,4 @@
-<|kernel=maxima, echo=False, math_env=equation*@
+<|maxima, code_echo=False, math_env=equation*@
 \documentclass{amsart}
 
 \usepackage{graphicx}
