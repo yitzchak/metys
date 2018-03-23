@@ -6,8 +6,8 @@ import os
 
 def Weave(options=None):
     opts = {
+        'code_echo': True,
         'code_env': 'verbatim',
-        'echo': True,
         'evaluate': True,
         'expand_options': False,
         'figure_env': 'figure',
@@ -22,6 +22,10 @@ def Weave(options=None):
         'math_prefix': 'eq:',
         'name': 'doc',
         'results': True,
+        'stderr_echo': True,
+        'stderr_env': 'verbatim',
+        'stdout_echo': False,
+        'stdout_env': 'verbatim',
         'wrap_math': True
     }
 

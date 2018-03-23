@@ -51,6 +51,14 @@ class LaTeXFormatter(Formatter):
 {0}
 \\end{{{code_env}}}'''
 
+    stderr_format = '''\\begin{{{stderr_env}}}{stderr_env_options}
+{0}
+\\end{{{stderr_env}}}'''
+
+    stdout_format = '''\\begin{{{stdout_env}}}{stdout_env_options}
+{0}
+\\end{{{stdout_env}}}'''
+
     def add_label(self, chunk, name):
         if hasattr(chunk, 'labels'):
             if name in chunk.labels:
@@ -98,6 +106,10 @@ class LaTeXFormatter(Formatter):
                     options['label_number'] = self.add_label(chunk, options['math_prefix'])
             else:
                 return value
+        elif mimetype == 'text/x.stderr':
+            format_str = self.stderr_format
+        elif mimetype == 'text/x.stdout':
+            format_str = self.stdout_format
         elif chunk.options['code_env'] == 'minted':
             format_str = self.inline_minted_format if chunk.options['inline'] else self.minted_format
         else:

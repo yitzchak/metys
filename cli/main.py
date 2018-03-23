@@ -6,15 +6,15 @@ ap = argparse.ArgumentParser()
 
 ap.add_argument('input', help='Path of input file.')
 
+g = ap.add_mutually_exclusive_group()
+g.add_argument('--code-echo', dest='code_echo', action='store_true',
+               help='Enable echo of code input.')
+g.add_argument('--no-code-echo', dest='code_echo', action='store_false',
+               help='Disable echo of code input.')
+
 ap.add_argument('--code-env', help='Default code environment for LaTeX.')
 
 ap.add_argument('--code-env-options', help='Default code environment options for LaTeX.')
-
-g = ap.add_mutually_exclusive_group()
-g.add_argument('--echo', dest='echo', action='store_true',
-               help='Enable echo of code input.')
-g.add_argument('--no-echo', dest='echo', action='store_false',
-               help='Disable echo of code input.')
 
 g = ap.add_mutually_exclusive_group()
 g.add_argument('--evaluate', dest='evaluate', action='store_true',
@@ -57,6 +57,26 @@ g.add_argument('--results', dest='results', action='store_true',
                help='Enable output of code results.')
 g.add_argument('--no-results', dest='results', action='store_false',
                help='Disable output of code results.')
+
+g = ap.add_mutually_exclusive_group()
+g.add_argument('--stderr-echo', dest='stderr_echo', action='store_true',
+               help='Enable echo of stderr.')
+g.add_argument('--no-stderr-echo', dest='stderr_echo', action='store_false',
+               help='Disable echo of stderr.')
+
+ap.add_argument('--stderr-env', help='Default stderr environment for LaTeX.')
+
+ap.add_argument('--stderr-env-options', help='Default stderr environment options for LaTeX.')
+
+g = ap.add_mutually_exclusive_group()
+g.add_argument('--stdout-echo', dest='stdout_echo', action='store_true',
+               help='Enable echo of stdout.')
+g.add_argument('--no-stdout-echo', dest='stdout_echo', action='store_false',
+               help='Disable echo of stdout.')
+
+ap.add_argument('--stdout-env', help='Default stdout environment for LaTeX.')
+
+ap.add_argument('--stdout-env-options', help='Default stdout environment options for LaTeX.')
 
 g = ap.add_mutually_exclusive_group()
 g.add_argument('--wrap-math', dest='wrap_math', action='store_true',

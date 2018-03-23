@@ -24,7 +24,7 @@ class FormatOutput(object):
                 chunk.output = self.format(chunk, 'text/plain', None, chunk.input)
             elif chunk.type == 'code':
                 parts = []
-                if chunk.options['echo']:
+                if chunk.options['code_echo']:
                     parts.append(self.format(chunk, chunk.language_info['mimetype'], chunk.language_info['pygments_lexer'], chunk.input))
                 if chunk.options['results'] and hasattr(chunk, 'messages'):
                     for msg in chunk.messages:
@@ -32,7 +32,7 @@ class FormatOutput(object):
                 chunk.output = (' ' if chunk.options['inline'] else '\n').join(parts)
 
     def format_message(self, chunk, msg):
-        if 'content' in msg and 'data' in msg['content']:
+        if msg['msg_type'] in ('display_data', 'execute_result'):
             for mimetype in chunk.options['mimetypes']:
                 if mimetype in msg['content']['data']:
                     content = msg['content']['data'][mimetype]
@@ -46,8 +46,9 @@ class FormatOutput(object):
                             elif i == 2:
                                 output += self.format(chunk, 'text/x.latex-math', None, parts[i])
                         return output
-
                     return self.format(chunk, mimetype, None, content)
+        elif msg['msg_type'] == 'stream' and chunk.options[msg['content']['name']]:
+            return self.format(chunk, 'text/x.' + msg['content']['name'], None, msg['content']['text'])
         return ''
 
     def format(self, chunk, mimetype, pygments_lexer, value):
