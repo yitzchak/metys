@@ -129,19 +129,19 @@ class ParseInput(object):
     def apply(self):
         print('Parsing ' + self.root.options['input'])
 
-        if 'parser' not in self.root.options:
-            if re.search(r'(?i)\..*nw$', self.root.options['input']):
-                self.root.options['parser'] = 'noweb'
-            elif re.search(r'(?i)\..*md$', self.root.options['input']):
-                self.root.options['parser'] = 'markdown'
-            else:
-                self.root.options['parser'] = 'metys'
-
-        self.default_key = 'name' if self.root.options['parser'] == 'noweb' else 'kernel'
-
         self.read()
 
         if self.root.type == 'group':
+            if 'parser' not in self.root.options:
+                if re.search(r'(?i)\..*nw$', self.root.options['input']):
+                    self.root.options['parser'] = 'noweb'
+                elif re.search(r'(?i)\..*md$', self.root.options['input']):
+                    self.root.options['parser'] = 'markdown'
+                else:
+                    self.root.options['parser'] = 'metys'
+
+            self.default_key = 'name' if self.root.options['parser'] == 'noweb' else 'kernel'
+
             if self.root.options['parser'] == 'noweb':
                 self.parse_noweb()
             elif self.root.options['parser'] == 'markdown':
