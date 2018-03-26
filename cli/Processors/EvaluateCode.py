@@ -16,15 +16,14 @@ class Kernel(object):
             self.client.wait_for_ready()
         except RuntimeError:
             print("Unable to start kernel.")
-            this.close()
+            self.close()
             raise
         info = self.client.kernel_info(reply=True)
         if info and 'content' in info and 'language_info' in info['content']:
             self.language_info = info['content']['language_info']
 
     def shutdown(self):
-        self.client.stop_channels()
-        self.kernel.shutdown_kernel()
+        self.client.shutdown()
 
     def execute_chunk(self, chunk):
         chunk.messages = []
