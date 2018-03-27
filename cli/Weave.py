@@ -29,13 +29,14 @@ def Weave(options=None):
         'wrap_math': True
     }
 
-    if 'input' in options:
-        dir, base = os.path.split(options['input'])
-        if dir != '':
-            os.chdir(dir)
-            options['input'] = base
-
     if options is not None:
+        if 'input' in options:
+            dir, base = os.path.split(options['input'])
+            if dir == '':
+                options['root'] = '.'
+            else:
+                options['root'] = dir
+                options['input'] = base
         opts.update(options)
 
     doc = Chunk(type='group', options=opts)

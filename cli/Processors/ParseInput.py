@@ -1,4 +1,5 @@
 import io
+import os
 import re
 import shlex
 import urllib
@@ -18,12 +19,14 @@ class ParseInput(object):
         pass
 
     def read(self):
+        file_path = os.path.join(self.root.options['root'], self.root.options['input'])
+
         try:
-            inputfile = io.open(self.root.options['input'], 'r', encoding='utf-8')
+            inputfile = io.open(file_path, 'r', encoding='utf-8')
             self.root.input = inputfile.read()
             inputfile.close()
         except IOError:
-            inputfile = urllib.request.urlopen(self.root.options['input'])
+            inputfile = urllib.request.urlopen(file_path)
             self.root.input = inputfile.read().decode('utf-8')
             inputfile.close()
 
@@ -34,6 +37,15 @@ class ParseInput(object):
             opts.update(self.parse_options(options))
         elif options:
             opts.update(options)
+
+        if 'input' in opts:
+            if 'root' not in opts:
+                dir, base = os.path.split(opts['input'])
+                if dir == '':
+                    opts['root'] = self.root.options['root']
+                else:
+                    opts['root'] = os.path.join(self.root.options['root'], dir)
+                    opts['input'] = base
 
         chunk = Chunk(type, input, opts)
         self.stack[-1].chunks.append(chunk)
@@ -127,7 +139,8 @@ class ParseInput(object):
                     chunk.options['inline'] = True
 
     def apply(self):
-        print('Parsing ' + self.root.options['input'])
+        file_path = os.path.join(self.root.options['root'], self.root.options['input'])
+        print('[metys] Parsing {0}'.format(file_path))
 
         self.read()
 

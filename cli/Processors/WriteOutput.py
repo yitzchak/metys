@@ -10,7 +10,8 @@ class WriteOutput:
             root.options['output'] = name + ('.md' if self.root.options['format'] == 'markdown' else '.tex')
 
     def __enter__(self):
-        self.file = open(self.root.options['output'], 'w+')
+        file_path = os.path.join(self.root.options['root'], self.root.options['output'])
+        self.file = open(file_path, 'w+')
         return self
 
     def __exit__(self, type, value, traceback):
@@ -18,7 +19,8 @@ class WriteOutput:
         pass
 
     def apply(self):
-        print('Writing ' + self.root.options['output'])
+        file_path = os.path.join(self.root.options['root'], self.root.options['output'])
+        print('[metys] Writing {0}'.format(file_path))
         for chunk in self.root.chunks:
             self.write_chunk(chunk)
 

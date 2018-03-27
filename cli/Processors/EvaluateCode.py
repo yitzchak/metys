@@ -1,7 +1,4 @@
 from jupyter_client import KernelManager
-from queue import Empty
-import copy
-import io
 
 
 class Kernel(object):
@@ -15,7 +12,7 @@ class Kernel(object):
         try:
             self.client.wait_for_ready()
         except RuntimeError:
-            print("Unable to start kernel.")
+            print("[metys] Unable to start kernel.")
             self.close()
             raise
         info = self.client.kernel_info(reply=True)

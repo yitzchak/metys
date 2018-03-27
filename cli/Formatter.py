@@ -15,7 +15,11 @@ class Formatter(object):
         ext = mimetypes.guess_extension(mimetype)
         if ext:
             name += ext
-        name = os.path.join(chunk.options['figure_path'], name)
+        dir = os.path.join(chunk.options['root'], chunk.options['figure_path'])
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        name = os.path.join(dir, name)
+        print('[metys] Writing {0}'.format(name))
         with open(name, mode) as f:
             f.write(value)
         return name
