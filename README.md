@@ -76,22 +76,22 @@ The following sample document accomplishes the same tasks as the previous noweb
 example. Unlike noweb document key value options without a value are assumed
 to be a kernel name, not a chunk name.
 
-```MarkDown
+````MarkDown
 Let's ask Maxima to solve a cubic equation.
 
-\`\`\`{maxima}
+```{maxima}
 solve(x^3+x+1=0,x);
-\`\`\`
+```
 
 Next let Python say hello and have Maxima plot a hyperbolic paraboloid.
-\`{python} print('Hello world!')`
+`{python} print('Hello world!')`
 
-\`\`\`{maxima, name=foo}
+```{maxima, name=foo}
 plot3d (u^2 - v^2, [u, -2, 2], [v, -3, 3], [grid, 100, 100],
   [mesh_lines_color, false], [svg_plot, "m.svg"]);
-\`\`\`
-That's all for now.
 ```
+That's all for now.
+````
 
 ### Metys Format
 
