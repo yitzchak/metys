@@ -27,13 +27,17 @@ python cli/main.py --help
 
 Metys can parse source documents in noweb, MarkDown or Metys format. The format
 of the source document will be determined by the file extension or by the
-`--parser` command line option if specified. Parsing the source document results
-in a series of logical chunks. These chunks are either text, code or group
-chunks. Text chunks contain text which is copied verbatim to the output
-document. Code chunks are evaluated by a Jupyter kernel and the results are
-formatted in the output document as per the local and global options specified.
-Group chunks are used to set options for a collection of chunks or to include
-subfiles.
+`--parser` command line option if specified. Source documents with a file
+extension ending with `nw` are assumed to be noweb documents. Those with a file
+extension ending with `md` are assumed to be MarkDown documents. All other files
+are assumed to be in Metys format.
+
+Parsing the source document results in a series of logical chunks. These chunks
+are either text, code or group chunks. Text chunks contain text which is copied
+verbatim to the output document. Code chunks are evaluated by a Jupyter kernel
+and the results are formatted in the output document as per the local and global
+options specified. Group chunks are used to set options for a collection of
+chunks or to include subfiles.
 
 ### noweb Format
 
