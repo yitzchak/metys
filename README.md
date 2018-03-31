@@ -4,7 +4,7 @@ Metys is scientific report generator and a literate programming tool similar to
 knitr or Pweave. Like Pweave, Metys uses the Jupyter protocol to run code
 embedded in the source document. Unlike Pweave, Metys can access multiple
 Jupyter kernels within the same source document and can also create multiple
-separate sesssions of the same kernel.
+separate sessions of the same kernel.
 
 Metys is currently alpha level software.
 
@@ -25,11 +25,11 @@ python cli/main.py --help
 
 ## Input Formats
 
-Metys can parse source documents in noweb, MarkDown or Metys format. The format
+Metys can parse source documents in noweb, Markdown or Metys format. The format
 of the source document will be determined by the file extension or by the
 `--parser` command line option if specified. Source documents with a file
 extension ending with `nw` are assumed to be noweb documents. Those with a file
-extension ending with `md` are assumed to be MarkDown documents. All other files
+extension ending with `md` are assumed to be Markdown documents. All other files
 are assumed to be in Metys format.
 
 Parsing the source document results in a series of logical chunks. These chunks
@@ -37,7 +37,7 @@ are either text, code or group chunks. Text chunks contain text which is copied
 verbatim to the output document. Code chunks are evaluated by a Jupyter kernel
 and the results are formatted in the output document as per the local and global
 options specified. Group chunks are used to set options for a collection of
-chunks or to include subfiles.
+chunks or to include subfiles which contain more text, code and group chunks.
 
 ### noweb Format
 
@@ -68,11 +68,11 @@ plot3d (u^2 - v^2, [u, -2, 2], [v, -3, 3], [grid, 100, 100],
 That's all for now.
 ```
 
-### MarkDown Format
+### Markdown Format
 
-Source documents in the MarkDown format can contain text or code chunks, but not
+Source documents in the Markdown format can contain text or code chunks, but not
 group chunks. Code chunks are delimited by a pair of single back-ticks or by a
-pair of triple back-ticks. This is the same delimiters that plain MarkDown uses
+pair of triple back-ticks. This is the same delimiters that plain Markdown uses
 to indicate code, the difference being that Metys expects a set of key/value
 options surrounded by curly braces or a set of empty curly braces.
 
@@ -80,7 +80,7 @@ The following sample document accomplishes the same tasks as the previous noweb
 example. Unlike noweb document key value options without a value are assumed
 to be a kernel name, not a chunk name.
 
-````MarkDown
+````Markdown
 Let's ask Maxima to solve a cubic equation.
 
 ```{maxima}
@@ -99,7 +99,7 @@ That's all for now.
 
 ### Metys Format
 
-Documents in Metys format can contain text, code or group chunks. Like MarkDown
+Documents in Metys format can contain text, code or group chunks. Like Markdown
 the entire document is assumed to be in text mode, so only code and group chunks
 have delimiters. Both code and group chunks are started by `<|` and terminated
 by `|>`. After the opening delimiter key/value options may be specified until a
@@ -126,3 +126,73 @@ plot3d (u^2 - v^2, [u, -2, 2], [v, -3, 3], [grid, 100, 100],
 That's all for now.
 |>
 ```
+
+## Chunk Options
+
+Chunk options may be specified in all input formats as a list of key/value pairs
+separated by commas. Each key/value pair consists of a name followed by an
+equals sign and a value. The absence of an equals sign and a value is treated as
+a value to be assigned to a default key. The default key for noweb format is
+`name`. For all other formats the default key is `kernel`.
+
+The key name may contain any combination of letters and underscores, along with
+a single period used to specify sub-options. For example, the following
+specifies a Maxima kernel, with a LaTeX code environment of `Verbatim` and
+`frame=single` as a verbatim environment option.
+
+```
+<|maxima, code_env=Verbatim, code_env_options.frame=single:
+solve(x^3+x+1=0,x);
+|>
+```
+
+The table below lists the chunk options available along with a short summary of
+each option.
+
+| Name               | Type                         | Default    | Description                            |
+|:-------------------|:-----------------------------|:-----------|:---------------------------------------|
+| code_echo          | boolean                      | `true`     | Enable echo of code input.             |
+| code_env           | string                       | `verbatim` | Code environment for LaTeX.            |
+| code_env_options   | string/sub-option            | None       | Code environment options for LaTeX.    |
+| evaluate           | boolean                      | `true`     | Enable evaluation of code input.       |
+| expand_options     | boolean                      | `false`    | Enable option expansion in code input. |
+| figure_caption     | string                       | None       | Figure caption.                        |
+| figure_env         | string                       | `figure`   | Figure environment for LaTeX.          |
+| figure_path        | string                       | `figure`   | Figure directory.                      |
+| figure_env_options | string/sub-option            | None       | Figure environment options for LaTeX.  |
+| figure_prefix      | string                       | `fig:`     | Figure label prefix for LaTeX.         |
+| format             | `latex`, `markdown`          | None       | Format of output file.                 |
+| graphics_options   | string/sub-option            | None       | Graphics options for LaTeX.            |
+| input              | string                       | None       | Path of input file for chunk.          |
+| kernel             | string                       | None       | Jupyter kernel.                        |
+| math_env           | string                       | `equation` | Display math environment for LaTeX.    |
+| math_prefix        | string                       | `eq:`      | Mathematics label prefix for LaTeX.    |
+| output             | string                       | None       | Path of output file for chunk.         |
+| parser             | `markdown`, `metys`, `noweb` | None       | Parser to use for input file.          |
+| results            | boolean                      | `true`     | Enable output of code results.         |
+| stderr_echo        | boolean                      | `true`     | Enable echo of stderr.                 |
+| stderr_env         | string                       | `verbatim` | stderr environment for LaTeX.          |
+| stderr_env_options | string/sub-option            | None       | stderr environment options for LaTeX.  |
+| stdout_echo        | boolean                      | `false     | Enable echo of stdout.                 |
+| stdout_env         | string                       | `verbatim` | stdout environment for LaTeX.          |
+| stdout_env_options | string/sub-option            | None       | stdout environment options for LaTeX.  |
+| wrap_math          | boolean                      | `true`     | Enabling wrapping of math results.     |
+
+Please not that some options are automatically deduced or may have special
+behavior. For instance,
+
+- The `format` option is automatically set if not specified. If `parser` is
+  set to `markdown` then the `format` is also. Otherwise `format` is set to
+  `latex`.
+
+- The `input` option has a different behavior for text/code chunks versus group
+  chunks. For group chunks the chunks contents are replaced with the contents
+  of the file specified by `input` after it has been parsed. For text or code
+  chunks the contents of the file is included without any parsing.
+
+- The `kernel` option is not set by default but will be set to `python` for
+  input files with an extension of `.Pmd` and set to `r` for input files with an
+  extension of `.Rmd`.
+
+- The `output` option will write any chunk output to the file specified by the
+  option versus writing the output to main output document.
