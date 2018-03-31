@@ -163,6 +163,7 @@ each option.
 | figure_prefix      | string                       | `fig:`     | Figure label prefix for LaTeX.              |
 | format             | `latex`, `markdown`          | None       | Format of output file.                      |
 | graphics_options   | string/sub-option            | None       | Graphics options for LaTeX.                 |
+| inline             | boolean                      | None       | Enable inline output format.                |
 | input              | string                       | None       | Path of input file for chunk.               |
 | kernel             | string                       | None       | Jupyter kernel.                             |
 | math_env           | string                       | `equation` | Display math environment for LaTeX.         |
@@ -185,6 +186,9 @@ behavior. For instance,
 - The `format` option is automatically set if not specified. If `parser` is
   set to `markdown` then the `format` is also. Otherwise `format` is set to
   `latex`.
+
+- The `inline` option is automatically set for Markdown and Metys documents, but
+  not for noweb documents.
 
 - The `input` option has a different behavior for text/code chunks versus group
   chunks. For group chunks the chunks contents are replaced with the contents
