@@ -127,6 +127,9 @@ That's all for now.
 |>
 ```
 
+Please note that kernels and sessions are local to the innermost enclosing
+group chunk.
+
 ## Chunk Options
 
 Chunk options may be specified in all input formats as a list of key/value pairs
