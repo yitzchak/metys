@@ -149,34 +149,35 @@ solve(x^3+x+1=0,x);
 The table below lists the chunk options available along with a short summary of
 each option.
 
-| Name               | Type                         | Default    | Description                            |
-|:-------------------|:-----------------------------|:-----------|:---------------------------------------|
-| code_echo          | boolean                      | `true`     | Enable echo of code input.             |
-| code_env           | string                       | `verbatim` | Code environment for LaTeX.            |
-| code_env_options   | string/sub-option            | None       | Code environment options for LaTeX.    |
-| evaluate           | boolean                      | `true`     | Enable evaluation of code input.       |
-| expand_options     | boolean                      | `false`    | Enable option expansion in code input. |
-| figure_caption     | string                       | None       | Figure caption.                        |
-| figure_env         | string                       | `figure`   | Figure environment for LaTeX.          |
-| figure_path        | string                       | `figure`   | Figure directory.                      |
-| figure_env_options | string/sub-option            | None       | Figure environment options for LaTeX.  |
-| figure_prefix      | string                       | `fig:`     | Figure label prefix for LaTeX.         |
-| format             | `latex`, `markdown`          | None       | Format of output file.                 |
-| graphics_options   | string/sub-option            | None       | Graphics options for LaTeX.            |
-| input              | string                       | None       | Path of input file for chunk.          |
-| kernel             | string                       | None       | Jupyter kernel.                        |
-| math_env           | string                       | `equation` | Display math environment for LaTeX.    |
-| math_prefix        | string                       | `eq:`      | Mathematics label prefix for LaTeX.    |
-| output             | string                       | None       | Path of output file for chunk.         |
-| parser             | `markdown`, `metys`, `noweb` | None       | Parser to use for input file.          |
-| results            | boolean                      | `true`     | Enable output of code results.         |
-| stderr_echo        | boolean                      | `true`     | Enable echo of stderr.                 |
-| stderr_env         | string                       | `verbatim` | stderr environment for LaTeX.          |
-| stderr_env_options | string/sub-option            | None       | stderr environment options for LaTeX.  |
-| stdout_echo        | boolean                      | `false     | Enable echo of stdout.                 |
-| stdout_env         | string                       | `verbatim` | stdout environment for LaTeX.          |
-| stdout_env_options | string/sub-option            | None       | stdout environment options for LaTeX.  |
-| wrap_math          | boolean                      | `true`     | Enabling wrapping of math results.     |
+| Name               | Type                         | Default    | Description                                 |
+|:-------------------|:-----------------------------|:-----------|:--------------------------------------------|
+| code_echo          | boolean                      | `true`     | Enable echo of code input.                  |
+| code_env           | string                       | `verbatim` | Code environment for LaTeX.                 |
+| code_env_options   | string/sub-option            | None       | Code environment options for LaTeX.         |
+| evaluate           | boolean                      | `true`     | Enable evaluation of code input.            |
+| expand_options     | boolean                      | `false`    | Enable option expansion in code input.      |
+| figure_caption     | string                       | None       | Figure caption.                             |
+| figure_env         | string                       | `figure`   | Figure environment for LaTeX.               |
+| figure_path        | string                       | `figure`   | Figure directory.                           |
+| figure_env_options | string/sub-option            | None       | Figure environment options for LaTeX.       |
+| figure_prefix      | string                       | `fig:`     | Figure label prefix for LaTeX.              |
+| format             | `latex`, `markdown`          | None       | Format of output file.                      |
+| graphics_options   | string/sub-option            | None       | Graphics options for LaTeX.                 |
+| input              | string                       | None       | Path of input file for chunk.               |
+| kernel             | string                       | None       | Jupyter kernel.                             |
+| math_env           | string                       | `equation` | Display math environment for LaTeX.         |
+| math_prefix        | string                       | `eq:`      | Mathematics label prefix for LaTeX.         |
+| name               | string                       | None       | Chunk name. Used for file names and labels. |
+| output             | string                       | None       | Path of output file for chunk.              |
+| parser             | `markdown`, `metys`, `noweb` | None       | Parser to use for input file.               |
+| results            | boolean                      | `true`     | Enable output of code results.              |
+| stderr_echo        | boolean                      | `true`     | Enable echo of stderr.                      |
+| stderr_env         | string                       | `verbatim` | stderr environment for LaTeX.               |
+| stderr_env_options | string/sub-option            | None       | stderr environment options for LaTeX.       |
+| stdout_echo        | boolean                      | `false     | Enable echo of stdout.                      |
+| stdout_env         | string                       | `verbatim` | stdout environment for LaTeX.               |
+| stdout_env_options | string/sub-option            | None       | stdout environment options for LaTeX.       |
+| wrap_math          | boolean                      | `true`     | Enabling wrapping of math results.          |
 
 Please not that some options are automatically deduced or may have special
 behavior. For instance,
