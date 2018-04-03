@@ -25,7 +25,10 @@ class FormatOutput(object):
             elif chunk.type == 'code':
                 parts = []
                 if chunk.options['code_echo']:
-                    parts.append(self.format(chunk, chunk.language_info['mimetype'], chunk.language_info['pygments_lexer'], chunk.input))
+                    input = chunk.input
+                    if 'prompt' in chunk.options:
+                        input = chunk.options['prompt'].format(chunk.reply['content']['execution_count']) + input
+                    parts.append(self.format(chunk, chunk.language_info['mimetype'], chunk.language_info['pygments_lexer'], input))
                 if chunk.options['results'] and hasattr(chunk, 'messages'):
                     for msg in chunk.messages:
                         parts.append(self.format_message(chunk, msg))

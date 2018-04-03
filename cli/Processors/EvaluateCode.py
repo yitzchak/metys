@@ -1,3 +1,4 @@
+from Chunk import Chunk
 from jupyter_client import KernelManager
 
 
@@ -22,13 +23,19 @@ class Kernel(object):
     def shutdown(self):
         self.client.shutdown()
 
+    def is_complete(self, code):
+        return self.client.is_complete(code)
+
     def execute_chunk(self, chunk):
         chunk.messages = []
         if hasattr(self, 'language_info'):
             chunk.language_info = self.language_info
         input = chunk.input.format(**chunk.options) if chunk.options['expand_options'] else chunk.input
-        self.client.execute_interactive(input, store_history=False,
-            allow_stdin=False, output_hook=lambda msg: chunk.messages.append(msg) if msg['msg_type'] in ('display_data', 'execute_result', 'stream') else None)
+        output_hook = lambda msg: chunk.messages.append(msg) if msg['msg_type'] in ('display_data', 'execute_result', 'stream') else None
+        chunk.reply = self.client.execute_interactive(input,
+                                                      store_history=False,
+                                                      allow_stdin=False,
+                                                      output_hook=output_hook)
 
 
 class EvaluateCode(object):
@@ -44,16 +51,46 @@ class EvaluateCode(object):
             kernel.shutdown()
 
     def apply(self):
+        chunks = []
+
         for chunk in self.root.chunks:
             if (chunk.type == 'group'):
+                chunks.append(chunk)
                 with EvaluateCode(chunk) as p:
                     p.apply()
             elif chunk.type == 'code' and chunk.options['evaluate']:
-                self.execute_chunk(chunk)
+                if chunk.options['restart']:
+                    self.shutdown_kernel(chunk)
+                kernel = self.get_kernel(chunk)
+                if chunk.options['split']:
+                    input = ''
+                    num = 0
+                    for line in chunk.input.strip('\n').splitlines(True):
+                        input += line
+                        if kernel.is_complete(input):
+                            ch = Chunk('code', input, chunk.options)
+                            num += 1
+                            ch.options['name'] = chunk.options['name'] + "-" + str(num)
+                            kernel.execute_chunk(ch)
+                            chunks.append(ch)
+                            input = ''
+                else:
+                    chunks.append(chunk)
+                    kernel.execute_chunk(chunk)
+            else:
+                chunks.append(chunk)
+        self.root.chunks = chunks
 
     def execute_chunk(self, chunk):
         kernel = self.get_kernel(chunk)
         kernel.execute_chunk(chunk)
+
+    def shutdown_kernel(self, chunk):
+        kernel_name = chunk.options['kernel']
+        kernel_id = (kernel_name + '|' + chunk.options['session']) if 'session' in chunk.options else kernel_name
+        if kernel_id in self.kernels:
+            self.kernels[kernel_id].shutdown()
+            del self.kernels[kernel_id]
 
     def get_kernel(self, chunk):
         kernel_name = chunk.options['kernel']

@@ -39,7 +39,7 @@ class LaTeXFormatter(Formatter):
 \\end{{{figure_env}}}'''
 
     math_format = '''\\begin{{{math_env}}}
-{0}
+{0}{math_post}
 \\label{{{math_prefix}{name}-{label_number}}}
 \\end{{{math_env}}}'''
 
@@ -97,6 +97,8 @@ class LaTeXFormatter(Formatter):
             options['label_number'] = self.add_label(chunk, options['figure_prefix'])
         elif mimetype == 'text/x.latex-math':
             if chunk.options['wrap_math']:
+                options['math_post'] = '\\tag{' + options['math_tag'].format(chunk.reply['content']['execution_count']) + '}' if 'math_tag' in options and hasattr(chunk, 'reply') else ''
+
                 if options['inline']:
                     format_str = self.inline_math_format
                 else:
