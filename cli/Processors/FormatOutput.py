@@ -44,9 +44,9 @@ class FormatOutput(object):
                         output = ''
                         for i in range(len(parts)):
                             sub = i % 3
-                            if i == 0:
+                            if sub == 0:
                                 output += self.format(chunk, 'text/latex', None, parts[i])
-                            elif i == 2:
+                            elif sub == 2:
                                 output += self.format(chunk, 'text/x.latex-math', None, parts[i])
                         return output
                     return self.format(chunk, mimetype, None, content)
