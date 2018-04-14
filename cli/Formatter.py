@@ -1,6 +1,7 @@
 import base64
 import mimetypes
 import os
+import re
 
 
 class Formatter(object):
@@ -77,8 +78,19 @@ class LaTeXFormatter(Formatter):
         else:
             options[key] = opt_format.format(options[key])
 
+    def escape_characters(self, value):
+        return re.sub(r'([&%$#_{}])', r'\\\1',
+                      value.replace('\\', '\\textbackslash ')
+                           .replace('~', '\\textasciitilde ')
+                           .replace('<', '\\textless ')
+                           .replace('>', '\\textgreater ')
+                           .replace('^', '\\textasciicircum '))
+
     def format(self, chunk, mimetype, pygments_lexer, value):
-        if mimetype in ('text/plain', 'text/latex', 'text/tex'):
+        if mimetype == 'text/plain':
+            return self.escape_characters(value)
+
+        if mimetype in ('text/latex', 'text/x-latex', 'text/tex', 'text/x-tex'):
             return value
 
         options = chunk.options.copy()

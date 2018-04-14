@@ -73,6 +73,7 @@ class EvaluateCode(object):
                             ch.options['name'] = chunk.options['name'] + "-" + str(num)
                             kernel.execute_chunk(ch)
                             chunks.append(ch)
+                            chunks.append(Chunk('text', '\n', chunk.options))
                             input = ''
                 else:
                     chunks.append(chunk)

@@ -20,6 +20,7 @@ def Weave(options=None):
         'inline': False,
         'math_env': 'equation',
         'math_prefix': 'eq:',
+        'math_split': True,
         'name': 'doc',
         'restart': False,
         'results': True,

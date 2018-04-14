@@ -21,7 +21,7 @@ class FormatOutput(object):
                 with FormatOutput(chunk) as p:
                     p.apply()
             elif chunk.type == 'text':
-                chunk.output = self.format(chunk, 'text/plain', None, chunk.input)
+                chunk.output = self.format(chunk, 'text/' + chunk.options['format'], None, chunk.input)
             elif chunk.type == 'code':
                 parts = []
                 if chunk.options['code_echo']:
@@ -39,7 +39,7 @@ class FormatOutput(object):
             for mimetype in chunk.options['mimetypes']:
                 if mimetype in msg['content']['data']:
                     content = msg['content']['data'][mimetype]
-                    if mimetype == 'text/latex':
+                    if chunk.options['math_split'] and mimetype in ('text/latex', 'text/x-latex', 'text/tex', 'text/x-tex'):
                         parts = re.split(r'(?s)(?P<d>[$]{1,2})(.*?)(?P=d)', content)
                         output = ''
                         for i in range(len(parts)):
