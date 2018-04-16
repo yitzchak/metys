@@ -7,10 +7,13 @@ class WriteOutput:
         self.root = root
         if 'output' not in self.root.options:
             name, _ = os.path.splitext(self.root.options['input'])
-            root.options['output'] = name + ('.md' if self.root.options['format'] == 'markdown' else '.tex')
+            root.options['output'] = name + \
+                ('.md' if self.root.options['format'] == 'markdown' else '.tex')
 
     def __enter__(self):
-        file_path = os.path.join(self.root.options['root'], self.root.options['output'])
+        file_path = os.path.join(
+            self.root.options['root'],
+            self.root.options['output'])
         self.file = open(file_path, 'w+')
         return self
 
@@ -19,7 +22,9 @@ class WriteOutput:
         pass
 
     def apply(self):
-        file_path = os.path.join(self.root.options['root'], self.root.options['output'])
+        file_path = os.path.join(
+            self.root.options['root'],
+            self.root.options['output'])
         print('[metys] Writing {0}'.format(file_path))
         for chunk in self.root.chunks:
             self.write_chunk(chunk)

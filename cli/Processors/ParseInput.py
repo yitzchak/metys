@@ -6,6 +6,7 @@ import urllib
 
 from Chunk import Chunk
 
+
 class ParseInput(object):
 
     def __init__(self, root):
@@ -19,7 +20,9 @@ class ParseInput(object):
         pass
 
     def read(self):
-        file_path = os.path.join(self.root.options['root'], self.root.options['input'])
+        file_path = os.path.join(
+            self.root.options['root'],
+            self.root.options['input'])
 
         try:
             inputfile = io.open(file_path, 'r', encoding='utf-8')
@@ -68,15 +71,21 @@ class ParseInput(object):
 
     def parse_options(self, value):
         options = {}
-        for match in re.finditer(r'(?s)(?P<name>\w+)(?:(?:\.(?P<sub>\w+))?\s*=\s*(?P<value>"(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\'|[^,=\'"\s]*))?', value):
+        for match in re.finditer(
+            r'(?s)(?P<name>\w+)(?:(?:\.(?P<sub>\w+))?\s*=\s*(?P<value>"(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\'|[^,=\'"\s]*))?',
+                value):
             if match.group('value') is None:
-                options[self.default_key] = self.parse_value(match.group('name'))
+                options[self.default_key] = self.parse_value(
+                    match.group('name'))
             elif match.group('sub') is None:
-                options[match.group('name')] = self.parse_value(match.group('value'))
+                options[match.group('name')] = self.parse_value(
+                    match.group('value'))
             else:
-                if match.group('name') not in options or not isinstance(options[match.group('name')], dict):
+                if match.group('name') not in options or not isinstance(
+                        options[match.group('name')], dict):
                     options[match.group('name')] = {}
-                options[match.group('name')][match.group('sub')] = self.parse_value(match.group('value'))
+                options[match.group('name')][match.group(
+                    'sub')] = self.parse_value(match.group('value'))
 
         return options
 
@@ -126,20 +135,23 @@ class ParseInput(object):
                 self.add_chunk(type='text')
 
     def parse_markdown(self):
-        parts = re.split(r'(?ms)(?P<fence>^```|(?<!`)`)\{([^}]+)\}(.*?)(?P=fence)',
-                         self.root.input)
+        parts = re.split(
+            r'(?ms)(?P<fence>^```|(?<!`)`)\{([^}]+)\}(.*?)(?P=fence)',
+            self.root.input)
         for i in range(len(parts)):
             sub = i % 4
             if sub == 0:
                 self.add_chunk(type='text', input=parts[i])
             elif sub == 1:
-                chunk = self.add_chunk(type='code', input=parts[i+2],
-                                       options=parts[i+1])
+                chunk = self.add_chunk(type='code', input=parts[i + 2],
+                                       options=parts[i + 1])
                 if parts[i] == '`':
                     chunk.options['inline'] = True
 
     def apply(self):
-        file_path = os.path.join(self.root.options['root'], self.root.options['input'])
+        file_path = os.path.join(
+            self.root.options['root'],
+            self.root.options['input'])
         print('[metys] Parsing {0}'.format(file_path))
 
         self.read()

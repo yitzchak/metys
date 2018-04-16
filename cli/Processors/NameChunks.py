@@ -17,7 +17,8 @@ class NameChunks:
             else:
                 counts[chunk.type] = 1
             if 'name' not in chunk.options:
-                chunk.options['name'] = self.root.options['name'] + '-' + chunk.type + str(counts[chunk.type])
+                chunk.options['name'] = self.root.options['name'] + \
+                    '-' + chunk.type + str(counts[chunk.type])
             if chunk.type == 'group':
                 with NameChunks(chunk) as p:
                     p.apply()

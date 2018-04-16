@@ -74,7 +74,10 @@ class LaTeXFormatter(Formatter):
         if key not in options:
             options[key] = ''
         elif isinstance(options[key], dict):
-            options[key] = opt_format.format(', '.join(k + '=' + v for k, v in options[key].items()))
+            options[key] = opt_format.format(
+                ', '.join(
+                    k + '=' + v for k,
+                    v in options[key].items()))
         else:
             options[key] = opt_format.format(options[key])
 
@@ -90,7 +93,11 @@ class LaTeXFormatter(Formatter):
         if mimetype == 'text/plain':
             return self.escape_characters(value)
 
-        if mimetype in ('text/latex', 'text/x-latex', 'text/tex', 'text/x-tex'):
+        if mimetype in (
+            'text/latex',
+            'text/x-latex',
+            'text/tex',
+                'text/x-tex'):
             return value
 
         options = chunk.options.copy()
@@ -106,16 +113,20 @@ class LaTeXFormatter(Formatter):
         if mimetype in ('application/pdf', 'image/png', 'image/jpeg'):
             format_str = self.figure_format if 'figure_caption' in options else self.graphics_format
             value = self.save_external(chunk, mimetype, value)
-            options['label_number'] = self.add_label(chunk, options['figure_prefix'])
+            options['label_number'] = self.add_label(
+                chunk, options['figure_prefix'])
         elif mimetype == 'text/x.latex-math':
             if chunk.options['wrap_math']:
-                options['math_post'] = '\\tag{' + options['math_tag'].format(chunk.reply['content']['execution_count']) + '}' if 'math_tag' in options and hasattr(chunk, 'reply') else ''
+                options['math_post'] = '\\tag{' + options['math_tag'].format(
+                    chunk.reply['content']['execution_count']) + '}' if 'math_tag' in options and hasattr(
+                    chunk, 'reply') else ''
 
                 if options['inline']:
                     format_str = self.inline_math_format
                 else:
                     format_str = self.math_format
-                    options['label_number'] = self.add_label(chunk, options['math_prefix'])
+                    options['label_number'] = self.add_label(
+                        chunk, options['math_prefix'])
             else:
                 return value
         else:

@@ -4,7 +4,7 @@ from jupyter_client import KernelManager
 
 class Kernel(object):
     def __init__(self, kernel_name):
-        self.kernel = KernelManager(kernel_name = kernel_name)
+        self.kernel = KernelManager(kernel_name=kernel_name)
 
     def start(self):
         self.kernel.start_kernel()
@@ -30,8 +30,11 @@ class Kernel(object):
         chunk.messages = []
         if hasattr(self, 'language_info'):
             chunk.language_info = self.language_info
-        input = chunk.input.format(**chunk.options) if chunk.options['expand_options'] else chunk.input
-        output_hook = lambda msg: chunk.messages.append(msg) if msg['msg_type'] in ('display_data', 'execute_result', 'stream') else None
+        input = chunk.input.format(
+            **chunk.options) if chunk.options['expand_options'] else chunk.input
+
+        def output_hook(msg): return chunk.messages.append(msg) if msg['msg_type'] in (
+            'display_data', 'execute_result', 'stream') else None
         chunk.reply = self.client.execute_interactive(input,
                                                       store_history=False,
                                                       allow_stdin=False,
@@ -70,7 +73,8 @@ class EvaluateCode(object):
                         if kernel.is_complete(input):
                             ch = Chunk('code', input, chunk.options)
                             num += 1
-                            ch.options['name'] = chunk.options['name'] + "-" + str(num)
+                            ch.options['name'] = chunk.options['name'] + \
+                                "-" + str(num)
                             kernel.execute_chunk(ch)
                             chunks.append(ch)
                             chunks.append(Chunk('text', '\n', chunk.options))
@@ -88,14 +92,20 @@ class EvaluateCode(object):
 
     def shutdown_kernel(self, chunk):
         kernel_name = chunk.options['kernel']
-        kernel_id = (kernel_name + '|' + chunk.options['session']) if 'session' in chunk.options else kernel_name
+        kernel_id = (
+            kernel_name +
+            '|' +
+            chunk.options['session']) if 'session' in chunk.options else kernel_name
         if kernel_id in self.kernels:
             self.kernels[kernel_id].shutdown()
             del self.kernels[kernel_id]
 
     def get_kernel(self, chunk):
         kernel_name = chunk.options['kernel']
-        kernel_id = (kernel_name + '|' + chunk.options['session']) if 'session' in chunk.options else kernel_name
+        kernel_id = (
+            kernel_name +
+            '|' +
+            chunk.options['session']) if 'session' in chunk.options else kernel_name
         if kernel_id in self.kernels:
             return self.kernels[kernel_id]
 
