@@ -39,7 +39,7 @@ class LaTeXFormatter(Formatter):
 \\label{{{figure_prefix}{name}-{label_number}}}
 \\end{{{figure_env}}}'''
 
-    math_format = '''\\begin{{{math_env}}}
+    math_format = '''\\begin{{{math_env}}}{math_env_options}
 {0}{math_post}
 \\label{{{math_prefix}{name}-{label_number}}}
 \\end{{{math_env}}}'''
@@ -116,10 +116,20 @@ class LaTeXFormatter(Formatter):
             options['label_number'] = self.add_label(
                 chunk, options['figure_prefix'])
         elif mimetype == 'text/x.latex-math':
-            if chunk.options['wrap_math']:
-                options['math_post'] = '\\tag{' + options['math_tag'].format(
-                    chunk.reply['content']['execution_count']) + '}' if 'math_tag' in options and hasattr(
-                    chunk, 'reply') else ''
+            if options['wrap_math']:
+                options['math_post'] = ''
+
+                if 'math_tag' in options:
+                    number = options['math_tag'].format(
+                        chunk.reply['content']['execution_count'])
+                    if options['math_env'] in ('dmath'):
+                        if 'math_env_options' in options:
+                            options['math_env_options']['number'] = number
+                        else:
+                            options['math_env_options'] = {
+                                'number': number}
+                    else:
+                        options['math_post'] = '\\tag{{{0}}}'.format(number)
 
                 if options['inline']:
                     format_str = self.inline_math_format
@@ -144,6 +154,8 @@ class LaTeXFormatter(Formatter):
                 format_str = self.inline_minted_format if options['inline'] else self.minted_format
             else:
                 format_str = self.verb_format
+
+        self.format_options(options, 'math_env_options')
 
         return format_str.format(value.strip('\n'), **options)
 
