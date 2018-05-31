@@ -4,6 +4,6 @@ class Chunk(object):
         self.type = type
         if options:
             self.options.update(options)
-        self.input = input if input else ''
+        self.input = input if input else ""
         self.external_count = 0
         self.chunks = []
