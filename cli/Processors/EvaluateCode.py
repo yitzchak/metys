@@ -36,6 +36,9 @@ class Kernel(object):
             else chunk.input
         )
 
+        if "code_template" in chunk.options:
+            input = chunk.options["code_template"].format(input, **chunk.options)
+
         def output_hook(msg):
             return (
                 chunk.messages.append(msg)

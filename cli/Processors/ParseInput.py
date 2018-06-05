@@ -104,7 +104,7 @@ class ParseInput(object):
     def parse_metys(self):
         self.start_chunk(type="text")
 
-        parts = re.split(r"(?s)(<\|.*?[@|:]|\|>)", self.root.input)
+        parts = re.split(r"(?s)(<\|(?:[^\\@|:]|\\.)*[@|:]|\|>)", self.root.input)
         for i in range(len(parts)):
             sub = i % 2
             if sub == 0:
@@ -115,7 +115,7 @@ class ParseInput(object):
             else:
                 chunk = self.start_chunk(
                     type="group" if parts[i][-1] == "@" else "code",
-                    options=parts[i][2:-1],
+                    options=parts[i][2:-1].replace("\\@", "@").replace("\\|", "|").replace("\\:", ":"),
                 )
                 if parts[i][-1] == "|":
                     chunk.options["inline"] = True
