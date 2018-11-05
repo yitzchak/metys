@@ -13,14 +13,14 @@ Metys is currently alpha level software.
 Metys is currently run from the command line by using the following.
 
 ```sh
-python cli/main.py foo.tmt
+metys foo.tmt
 ```
 
 There are many command line options available. A short description will be shown
 with the following.
 
 ```sh
-python cli/main.py --help
+metys --help
 ```
 
 ## Input Formats

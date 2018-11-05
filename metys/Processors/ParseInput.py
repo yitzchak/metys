@@ -4,7 +4,7 @@ import re
 import shlex
 import urllib
 
-from Chunk import Chunk
+from ..Chunk import Chunk
 
 
 class ParseInput(object):

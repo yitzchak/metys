@@ -1,4 +1,4 @@
-from Chunk import Chunk
+from ..Chunk import Chunk
 from jupyter_client import KernelManager
 
 

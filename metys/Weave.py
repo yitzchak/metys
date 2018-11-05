@@ -1,6 +1,6 @@
-import Processors
-from Chunk import Chunk
-from Formatter import LaTeXFormatter, MarkDownFormatter
+from .Processors import *
+from .Chunk import Chunk
+from .Formatter import LaTeXFormatter, MarkDownFormatter
 import os
 
 
