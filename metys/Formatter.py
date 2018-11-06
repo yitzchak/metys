@@ -167,7 +167,6 @@ class LaTeXFormatter(Formatter):
 
 class MarkDownFormatter(Formatter):
     def format(self, chunk, mimetype, pygments_lexer, value):
-        print(mimetype)
         if mimetype == "text/plain" or mimetype == "text/markdown":
             return value
 
