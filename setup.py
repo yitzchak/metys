@@ -8,7 +8,7 @@ except IOError:
 
 setup(
     name="metys",
-    version="0.1.1",
+    version="0.1.2",
     description="Multi-kernel/Multi-session Jupyter scientific report generator and literate programming tool.",
     license="MIT",
     author="Tarn W. Burton",
