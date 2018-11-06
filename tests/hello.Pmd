@@ -1,0 +1,5 @@
+Let Python say hello.
+```{python, stdout_echo=true}
+print('Hello world!')
+```
+That's all for now.

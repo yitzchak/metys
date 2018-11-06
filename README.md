@@ -179,7 +179,7 @@ each option.
 | stderr_echo        | boolean                      | `true`     | Enable echo of stderr.                         |
 | stderr_env         | string                       | `verbatim` | stderr environment for LaTeX.                  |
 | stderr_env_options | string/sub-option            | None       | stderr environment options for LaTeX.          |
-| stdout_echo        | boolean                      | `false     | Enable echo of stdout.                         |
+| stdout_echo        | boolean                      | `false`    | Enable echo of stdout.                         |
 | stdout_env         | string                       | `verbatim` | stdout environment for LaTeX.                  |
 | stdout_env_options | string/sub-option            | None       | stdout environment options for LaTeX.          |
 | wrap_math          | boolean                      | `true`     | Enabling wrapping of math results.             |

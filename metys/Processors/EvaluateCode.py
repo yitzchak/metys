@@ -14,7 +14,7 @@ class Kernel(object):
             self.client.wait_for_ready()
         except RuntimeError:
             print("[metys] Unable to start kernel.")
-            self.close()
+            self.shutdown()
             raise
         info = self.client.kernel_info(reply=True)
         if info and "content" in info and "language_info" in info["content"]:
@@ -47,7 +47,8 @@ class Kernel(object):
             )
 
         chunk.reply = self.client.execute_interactive(
-            input, store_history=False, allow_stdin=False, output_hook=output_hook
+            input, store_history=False, allow_stdin=False,
+            output_hook=output_hook
         )
 
 

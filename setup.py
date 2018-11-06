@@ -8,7 +8,7 @@ except IOError:
 
 setup(
     name="metys",
-    version="0.1.0",
+    version="0.1.1",
     description="Multi-kernel/Multi-session Jupyter scientific report generator and literate programming tool.",
     license="MIT",
     author="Tarn W. Burton",
@@ -18,6 +18,7 @@ setup(
         'console_scripts': ['metys=metys.__main__:main'],
     },
     long_description=long_description,
+    long_description_content_type='text/markdown',
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.7",

@@ -167,7 +167,8 @@ class LaTeXFormatter(Formatter):
 
 class MarkDownFormatter(Formatter):
     def format(self, chunk, mimetype, pygments_lexer, value):
-        if mimetype == "text/plain":
+        print(mimetype)
+        if mimetype == "text/plain" or mimetype == "text/markdown":
             return value
 
         if mimetype in ("image/svg+xml", "image/png", "image/jpeg"):
@@ -181,5 +182,9 @@ class MarkDownFormatter(Formatter):
                 return format_str.format(value, **chunk.options)
             return value
 
+        if mimetype == "text/x.stdout" or mimetype == "text/x.stderr":
+            format_str = "`{0}`" if chunk.options["inline"] else "```\n{0}\n```"
+            return format_str.format(value.strip("\n"))
+
         format_str = "`{0}`" if chunk.options["inline"] else "```{kernel}\n{0}\n```"
-        return format_str.format(value, **chunk.options)
+        return format_str.format(value.strip("\n"), **chunk.options)

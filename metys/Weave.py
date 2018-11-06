@@ -41,23 +41,23 @@ def Weave(options=None):
 
     doc = Chunk(type="group", options=opts)
 
-    with Processors.ParseInput(doc) as p:
+    with ParseInput(doc) as p:
         p.apply()
 
-    with Processors.DeduceOptions(doc) as p:
+    with DeduceOptions(doc) as p:
         p.apply()
 
-    with Processors.NameChunks(doc) as p:
+    with NameChunks(doc) as p:
         p.apply()
 
-    with Processors.ApplyDefaultOptions(doc) as p:
+    with ApplyDefaultOptions(doc) as p:
         p.apply()
 
-    with Processors.EvaluateCode(doc) as p:
+    with EvaluateCode(doc) as p:
         p.apply()
 
-    with Processors.FormatOutput(doc) as p:
+    with FormatOutput(doc) as p:
         p.apply()
 
-    with Processors.WriteOutput(doc) as p:
+    with WriteOutput(doc) as p:
         p.apply()
