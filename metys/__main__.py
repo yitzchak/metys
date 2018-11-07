@@ -1,10 +1,15 @@
 import argparse
+from ._version import __version__
 from .Weave import Weave
 
 def main():
-    ap = argparse.ArgumentParser(prog='metys')
+    ap = argparse.ArgumentParser(
+        prog='metys',
+        description='Multi-kernel/Multi-session Jupyter scientific report generator and literate programming tool.')
 
     ap.add_argument("input", help="Path of input file.")
+
+    ap.add_argument('--version', action='version', version=__version__)
 
     g = ap.add_mutually_exclusive_group()
     g.add_argument(
